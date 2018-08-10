@@ -8,20 +8,27 @@
 
 /* Begin PBXBuildFile section */
 		2FC42654211BD917007B3099 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FC42653211BD917007B3099 /* AppDelegate.swift */; };
-		2FC42656211BD917007B3099 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FC42655211BD917007B3099 /* ViewController.swift */; };
+		2FC42656211BD917007B3099 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FC42655211BD917007B3099 /* CameraViewController.swift */; };
 		2FC42659211BD917007B3099 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2FC42657211BD917007B3099 /* Main.storyboard */; };
 		2FC4265B211BD918007B3099 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2FC4265A211BD918007B3099 /* Assets.xcassets */; };
 		2FC4265E211BD918007B3099 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2FC4265C211BD918007B3099 /* LaunchScreen.storyboard */; };
+		2FC4268A211BF84F007B3099 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FC42689211BF84F007B3099 /* ReplayKit.framework */; };
+		2FC42694211BF84F007B3099 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FC42689211BF84F007B3099 /* ReplayKit.framework */; };
+		2FC42696211BF84F007B3099 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FC42695211BF84F007B3099 /* UIKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		2FC42650211BD917007B3099 /* WotjdCam.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WotjdCam.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2FC42653211BD917007B3099 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		2FC42655211BD917007B3099 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		2FC42655211BD917007B3099 /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
 		2FC42658211BD917007B3099 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		2FC4265A211BD918007B3099 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2FC4265D211BD918007B3099 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2FC4265F211BD918007B3099 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2FC42687211BF84F007B3099 /* BroadcastExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = BroadcastExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		2FC42689211BF84F007B3099 /* ReplayKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReplayKit.framework; path = System/Library/Frameworks/ReplayKit.framework; sourceTree = SDKROOT; };
+		2FC42693211BF84F007B3099 /* BroadcastExtensionSetupUI.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = BroadcastExtensionSetupUI.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		2FC42695211BF84F007B3099 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -32,6 +39,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		2FC42684211BF84F007B3099 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2FC4268A211BF84F007B3099 /* ReplayKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2FC42690211BF84F007B3099 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2FC42694211BF84F007B3099 /* ReplayKit.framework in Frameworks */,
+				2FC42696211BF84F007B3099 /* UIKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -39,6 +63,7 @@
 			isa = PBXGroup;
 			children = (
 				2FC42652211BD917007B3099 /* WotjdCam */,
+				2FC42688211BF84F007B3099 /* Frameworks */,
 				2FC42651211BD917007B3099 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -47,6 +72,8 @@
 			isa = PBXGroup;
 			children = (
 				2FC42650211BD917007B3099 /* WotjdCam.app */,
+				2FC42687211BF84F007B3099 /* BroadcastExtension.appex */,
+				2FC42693211BF84F007B3099 /* BroadcastExtensionSetupUI.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -55,13 +82,22 @@
 			isa = PBXGroup;
 			children = (
 				2FC42653211BD917007B3099 /* AppDelegate.swift */,
-				2FC42655211BD917007B3099 /* ViewController.swift */,
+				2FC42655211BD917007B3099 /* CameraViewController.swift */,
 				2FC42657211BD917007B3099 /* Main.storyboard */,
 				2FC4265A211BD918007B3099 /* Assets.xcassets */,
 				2FC4265C211BD918007B3099 /* LaunchScreen.storyboard */,
 				2FC4265F211BD918007B3099 /* Info.plist */,
 			);
 			path = WotjdCam;
+			sourceTree = "<group>";
+		};
+		2FC42688211BF84F007B3099 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				2FC42689211BF84F007B3099 /* ReplayKit.framework */,
+				2FC42695211BF84F007B3099 /* UIKit.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -84,6 +120,40 @@
 			productReference = 2FC42650211BD917007B3099 /* WotjdCam.app */;
 			productType = "com.apple.product-type.application";
 		};
+		2FC42686211BF84F007B3099 /* BroadcastExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2FC426A4211BF850007B3099 /* Build configuration list for PBXNativeTarget "BroadcastExtension" */;
+			buildPhases = (
+				2FC42683211BF84F007B3099 /* Sources */,
+				2FC42684211BF84F007B3099 /* Frameworks */,
+				2FC42685211BF84F007B3099 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BroadcastExtension;
+			productName = BroadcastExtension;
+			productReference = 2FC42687211BF84F007B3099 /* BroadcastExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		2FC42692211BF84F007B3099 /* BroadcastExtensionSetupUI */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2FC426A1211BF850007B3099 /* Build configuration list for PBXNativeTarget "BroadcastExtensionSetupUI" */;
+			buildPhases = (
+				2FC4268F211BF84F007B3099 /* Sources */,
+				2FC42690211BF84F007B3099 /* Frameworks */,
+				2FC42691211BF84F007B3099 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BroadcastExtensionSetupUI;
+			productName = BroadcastExtensionSetupUI;
+			productReference = 2FC42693211BF84F007B3099 /* BroadcastExtensionSetupUI.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -95,6 +165,12 @@
 				ORGANIZATIONNAME = wotjd;
 				TargetAttributes = {
 					2FC4264F211BD917007B3099 = {
+						CreatedOnToolsVersion = 9.4.1;
+					};
+					2FC42686211BF84F007B3099 = {
+						CreatedOnToolsVersion = 9.4.1;
+					};
+					2FC42692211BF84F007B3099 = {
 						CreatedOnToolsVersion = 9.4.1;
 					};
 				};
@@ -113,6 +189,8 @@
 			projectRoot = "";
 			targets = (
 				2FC4264F211BD917007B3099 /* WotjdCam */,
+				2FC42686211BF84F007B3099 /* BroadcastExtension */,
+				2FC42692211BF84F007B3099 /* BroadcastExtensionSetupUI */,
 			);
 		};
 /* End PBXProject section */
@@ -128,6 +206,20 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		2FC42685211BF84F007B3099 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2FC42691211BF84F007B3099 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -135,8 +227,22 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2FC42656211BD917007B3099 /* ViewController.swift in Sources */,
+				2FC42656211BD917007B3099 /* CameraViewController.swift in Sources */,
 				2FC42654211BD917007B3099 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2FC42683211BF84F007B3099 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2FC4268F211BF84F007B3099 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -283,6 +389,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = BY96HCBY6M;
 				INFOPLIST_FILE = WotjdCam/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -290,7 +397,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = wotjd.WotjdCam;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -301,12 +408,89 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = BY96HCBY6M;
 				INFOPLIST_FILE = WotjdCam/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = wotjd.WotjdCam;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		2FC426A2211BF850007B3099 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = BY96HCBY6M;
+				INFOPLIST_FILE = BroadcastExtensionSetupUI/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = wotjd.WotjdCam.BroadcastExtensionSetupUI;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		2FC426A3211BF850007B3099 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = BY96HCBY6M;
+				INFOPLIST_FILE = BroadcastExtensionSetupUI/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = wotjd.WotjdCam.BroadcastExtensionSetupUI;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		2FC426A5211BF850007B3099 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = BY96HCBY6M;
+				INFOPLIST_FILE = BroadcastExtension/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = wotjd.WotjdCam.BroadcastExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		2FC426A6211BF850007B3099 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = BY96HCBY6M;
+				INFOPLIST_FILE = BroadcastExtension/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = wotjd.WotjdCam.BroadcastExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -329,6 +513,24 @@
 			buildConfigurations = (
 				2FC42663211BD918007B3099 /* Debug */,
 				2FC42664211BD918007B3099 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2FC426A1211BF850007B3099 /* Build configuration list for PBXNativeTarget "BroadcastExtensionSetupUI" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2FC426A2211BF850007B3099 /* Debug */,
+				2FC426A3211BF850007B3099 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2FC426A4211BF850007B3099 /* Build configuration list for PBXNativeTarget "BroadcastExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2FC426A5211BF850007B3099 /* Debug */,
+				2FC426A6211BF850007B3099 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
