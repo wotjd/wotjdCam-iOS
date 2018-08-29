@@ -7,20 +7,33 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2F2FC35F212EADD4009C2AF3 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F2FC35E212EADD4009C2AF3 /* Alamofire.framework */; };
+		2F49FAE9212BFB3700556F99 /* LiveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F49FAE8212BFB3700556F99 /* LiveViewController.swift */; };
+		2F49FAEA212C054B00556F99 /* HaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F49FAE3212BFAA000556F99 /* HaishinKit.framework */; };
+		2F49FAEB212C054B00556F99 /* Logboard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F49FAE5212BFAA400556F99 /* Logboard.framework */; };
+		2FA8E10C2133C7AC00BF624A /* AudioEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FA8E10B2133C7AC00BF624A /* AudioEncoder.swift */; };
 		2FC42654211BD917007B3099 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FC42653211BD917007B3099 /* AppDelegate.swift */; };
-		2FC42656211BD917007B3099 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FC42655211BD917007B3099 /* CameraViewController.swift */; };
+		2FC42656211BD917007B3099 /* AuthorizationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FC42655211BD917007B3099 /* AuthorizationViewController.swift */; };
 		2FC42659211BD917007B3099 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2FC42657211BD917007B3099 /* Main.storyboard */; };
 		2FC4265B211BD918007B3099 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2FC4265A211BD918007B3099 /* Assets.xcassets */; };
 		2FC4265E211BD918007B3099 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2FC4265C211BD918007B3099 /* LaunchScreen.storyboard */; };
 		2FC4268A211BF84F007B3099 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FC42689211BF84F007B3099 /* ReplayKit.framework */; };
 		2FC42694211BF84F007B3099 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FC42689211BF84F007B3099 /* ReplayKit.framework */; };
 		2FC42696211BF84F007B3099 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FC42695211BF84F007B3099 /* UIKit.framework */; };
+		2FC426A9211D974B007B3099 /* FrameExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FC426A8211D974B007B3099 /* FrameExtractor.swift */; };
+		2FC426AB21215009007B3099 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FC426AA21215009007B3099 /* CameraViewController.swift */; };
+		2FCC7C49212D32DB00BBDF92 /* VideoEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FCC7C48212D32DB00BBDF92 /* VideoEncoder.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2F2FC35E212EADD4009C2AF3 /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = WotjdCam/Carthage/Build/iOS/Alamofire.framework; sourceTree = "<group>"; };
+		2F49FAE3212BFAA000556F99 /* HaishinKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HaishinKit.framework; path = WotjdCam/Carthage/Build/iOS/HaishinKit.framework; sourceTree = "<group>"; };
+		2F49FAE5212BFAA400556F99 /* Logboard.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Logboard.framework; path = WotjdCam/Carthage/Build/iOS/Logboard.framework; sourceTree = "<group>"; };
+		2F49FAE8212BFB3700556F99 /* LiveViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveViewController.swift; sourceTree = "<group>"; };
+		2FA8E10B2133C7AC00BF624A /* AudioEncoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEncoder.swift; sourceTree = "<group>"; };
 		2FC42650211BD917007B3099 /* WotjdCam.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WotjdCam.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2FC42653211BD917007B3099 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		2FC42655211BD917007B3099 /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
+		2FC42655211BD917007B3099 /* AuthorizationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationViewController.swift; sourceTree = "<group>"; };
 		2FC42658211BD917007B3099 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		2FC4265A211BD918007B3099 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2FC4265D211BD918007B3099 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -29,6 +42,9 @@
 		2FC42689211BF84F007B3099 /* ReplayKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReplayKit.framework; path = System/Library/Frameworks/ReplayKit.framework; sourceTree = SDKROOT; };
 		2FC42693211BF84F007B3099 /* BroadcastExtensionSetupUI.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = BroadcastExtensionSetupUI.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		2FC42695211BF84F007B3099 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		2FC426A8211D974B007B3099 /* FrameExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameExtractor.swift; sourceTree = "<group>"; };
+		2FC426AA21215009007B3099 /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
+		2FCC7C48212D32DB00BBDF92 /* VideoEncoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoEncoder.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -36,6 +52,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2F49FAEA212C054B00556F99 /* HaishinKit.framework in Frameworks */,
+				2F49FAEB212C054B00556F99 /* Logboard.framework in Frameworks */,
+				2F2FC35F212EADD4009C2AF3 /* Alamofire.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -82,7 +101,12 @@
 			isa = PBXGroup;
 			children = (
 				2FC42653211BD917007B3099 /* AppDelegate.swift */,
-				2FC42655211BD917007B3099 /* CameraViewController.swift */,
+				2FC42655211BD917007B3099 /* AuthorizationViewController.swift */,
+				2FC426AA21215009007B3099 /* CameraViewController.swift */,
+				2FC426A8211D974B007B3099 /* FrameExtractor.swift */,
+				2FA8E10B2133C7AC00BF624A /* AudioEncoder.swift */,
+				2FCC7C48212D32DB00BBDF92 /* VideoEncoder.swift */,
+				2F49FAE8212BFB3700556F99 /* LiveViewController.swift */,
 				2FC42657211BD917007B3099 /* Main.storyboard */,
 				2FC4265A211BD918007B3099 /* Assets.xcassets */,
 				2FC4265C211BD918007B3099 /* LaunchScreen.storyboard */,
@@ -94,6 +118,9 @@
 		2FC42688211BF84F007B3099 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2F2FC35E212EADD4009C2AF3 /* Alamofire.framework */,
+				2F49FAE5212BFAA400556F99 /* Logboard.framework */,
+				2F49FAE3212BFAA000556F99 /* HaishinKit.framework */,
 				2FC42689211BF84F007B3099 /* ReplayKit.framework */,
 				2FC42695211BF84F007B3099 /* UIKit.framework */,
 			);
@@ -110,6 +137,7 @@
 				2FC4264C211BD917007B3099 /* Sources */,
 				2FC4264D211BD917007B3099 /* Frameworks */,
 				2FC4264E211BD917007B3099 /* Resources */,
+				2F49FAE7212BFAC000556F99 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -222,13 +250,37 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		2F49FAE7212BFAC000556F99 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/WotjdCam/Carthage/Build/iOS/Logboard.framework",
+				"$(SRCROOT)/WotjdCam/Carthage/Build/iOS/HaishinKit.framework",
+				"$(SRCROOT)/WotjdCam/Carthage/Build/iOS/Alamofire.framework",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/usr/local/bin/carthage copy-frameworks";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		2FC4264C211BD917007B3099 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2FC42656211BD917007B3099 /* CameraViewController.swift in Sources */,
+				2FC42656211BD917007B3099 /* AuthorizationViewController.swift in Sources */,
+				2FC426AB21215009007B3099 /* CameraViewController.swift in Sources */,
+				2FC426A9211D974B007B3099 /* FrameExtractor.swift in Sources */,
+				2FA8E10C2133C7AC00BF624A /* AudioEncoder.swift in Sources */,
 				2FC42654211BD917007B3099 /* AppDelegate.swift in Sources */,
+				2FCC7C49212D32DB00BBDF92 /* VideoEncoder.swift in Sources */,
+				2F49FAE9212BFB3700556F99 /* LiveViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -388,6 +440,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = BY96HCBY6M;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/WotjdCam/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = WotjdCam/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -407,6 +463,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = BY96HCBY6M;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/WotjdCam/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = WotjdCam/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
 				LD_RUNPATH_SEARCH_PATHS = (
