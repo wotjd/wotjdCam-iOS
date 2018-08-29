@@ -1,3 +1,7 @@
+# wotjdCam
+
+라이브 스트리밍 테스트용 iOS 어플리케이션
+
 ## 빌드하기
 
 아래 명시된 대로 라이브러리를 추가한 뒤 빌드한다.
@@ -20,6 +24,8 @@ Carthage 패키지를 설치해야한다.
 
 - 사용법 (한글) : https://letsean.app/2016/02/22/Carthage.html
 
+
+
 ## 그 외 
 
 ### 추가설정
@@ -41,3 +47,26 @@ xcodeproj 의 provisioning 정보, bundle identifier 를 추가 설정해야할 
 
 3. Live 탭 : HaishinKit 라이브러리를 이용하여 실시간 HLS 스트리밍 하는 코드가 존재
 
+
+
+#DummyUploadServer 
+
+wotjdCam 에서 encoding 된 데이터를 업로드하기 위해 만든 더미 서버
+
+## 빌드 및 실행
+
+NodeJS, Babel 이 설치되어 있어야 함
+
+0. `npm install` 명령어 실행
+
+1. `npm run build` 명령어 실행
+   - babel 로 빌드되면서 build 폴더에 컴파일 결과물 생성됨
+2. `npm run start` 명령어 실행
+   - ip:3000 으로 서버가 실행됨
+
+## 그 외
+
+- 포트 정보는 server/TestServer/index.js 내에 상수로 존재 (`let port = 3000;`)
+- 업로드 제한은 5MB
+- 업로드 경로 : http://[sip]:3000/upload?type=[video / audio]&pts=[pts value]
+- 업로드 시 [서버 경로]/output/[video / audio]/[*.h264 / *.aac] 형태로 저장됨
