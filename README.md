@@ -37,19 +37,26 @@ xcodeproj 의 provisioning 정보, bundle identifier 를 추가 설정해야할 
 탭 별 구현사항이 다름
 
 1. Authorize 탭 : 권한 관련 기능 확인용 탭 *(AuthorizationViewController)*
-
 2. Camera 탭 : 개발 중인 탭
 
    - FrameExtractor : Camera, Mic 로 부터 Raw 스트림을 받고, Callback 호출 처리하는 코드가 존재
 
    - CameraViewController : View 관리 및 FrameExtractor, A/V 인코더의 대리자 역할을 하여 인코딩된 결과물을 처리하는 코드가 존재
    - VideoEncoder, AudioEncoder : A/V Raw 데이터를 인코딩 (yuv to H264, pcm to aac)
-
 3. Live 탭 : HaishinKit 라이브러리를 이용하여 실시간 HLS 스트리밍 하는 코드가 존재
 
+### Known issue
 
+1. Camera 탭 진입 시 CPU 로드율이 지나치게 높음
+   - CPU를 150%까지 로드 (Live 탭의 경우 20% 내외)
+   - 원인
+     - FrameExtractor 내 에서 카메라 화면을 업데이트 하기 위해 사용 하는 updateView 가 원인
+     - updateView의 경우 CMSampleBuffer 데이터를 CMImage로 변환 후 view에 업데이트
+     - 1초에 수십번씩 yuv -> image 로 컨버팅하면서 생기는 현상으로 추정 (updateView 비활성화 시 정상적임)
+   - 해결방법 (추정)
+     - view 에 직접 업데이트 하는 코드를 지우고, AVCaptureVideoPreviewLayer 를 사용
 
-#DummyUploadServer 
+# DummyUploadServer 
 
 wotjdCam 에서 encoding 된 데이터를 업로드하기 위해 만든 더미 서버
 

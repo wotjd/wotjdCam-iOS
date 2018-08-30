@@ -194,6 +194,7 @@ class FrameExtractor : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, A
     var lastAudio: Int64 = 0
     var frameCounter = 0
     
+    // Fixme : load CPU too much
     func updateView(_ sampleBuffer: CMSampleBuffer) {
         var count: CMItemCount = 1
         var info = CMSampleTimingInfo()

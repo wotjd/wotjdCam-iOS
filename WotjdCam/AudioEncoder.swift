@@ -208,34 +208,21 @@ class AudioEncoder: NSObject {
             return
         }
         
-        var finished: Bool = false
-        repeat {
-            var isOutputDataPacketSize: UInt32 = 1
-            let dataLength = CMBlockBufferGetDataLength(blockBuffer!);
-            
-            let outputData: UnsafeMutableAudioBufferListPointer = AudioBufferList.allocate(maximumBuffers: 1)
-            outputData[0].mData = UnsafeMutableRawPointer.allocate(byteCount: dataLength, alignment: 0)
-            outputData[0].mDataByteSize = UInt32(dataLength)
-            outputData[0].mNumberChannels = 1
-            
-            let status = AudioConverterFillComplexBuffer(
-                converter!,
-                inInputDataProc,
-                UnsafeMutableRawPointer(currentBufferList!.unsafeMutablePointer),
-//                Unmanaged.passUnretained(self).toOpaque(),
-                &isOutputDataPacketSize, outputData.unsafeMutablePointer, nil)
-            /* Objective-C : adts
-            NSData *data = nil;
-            if (status == 0) {
-                NSData *rawAAC = [NSData dataWithBytes:outAudioBufferList.mBuffers[0].mData length:outAudioBufferList.mBuffers[0].mDataByteSize];
-                NSData *adtsHeader = [self adtsDataForPacketLength:rawAAC.length];
-                NSMutableData *fullData = [NSMutableData dataWithData:adtsHeader];
-                [fullData appendData:rawAAC];
-                data = fullData;
-            } */
+        var isOutputDataPacketSize: UInt32 = 1
+        let dataLength = CMBlockBufferGetDataLength(blockBuffer!);
         
-            switch status {
-            // kAudioConverterErr_InvalidInputSize: perhaps mistake. but can support macOS BuiltIn Mic #61
+        let outputData: UnsafeMutableAudioBufferListPointer = AudioBufferList.allocate(maximumBuffers: 1)
+        outputData[0].mData = UnsafeMutableRawPointer.allocate(byteCount: dataLength, alignment: 0)
+        outputData[0].mDataByteSize = UInt32(dataLength)
+        outputData[0].mNumberChannels = 1
+        
+        let status = AudioConverterFillComplexBuffer(
+            converter!,
+            inInputDataProc,
+            UnsafeMutableRawPointer(currentBufferList!.unsafeMutablePointer),
+            &isOutputDataPacketSize, outputData.unsafeMutablePointer, nil)
+        switch status {
+        // kAudioConverterErr_InvalidInputSize: perhaps mistake. but can support macOS BuiltIn Mic #61
             case noErr, kAudioConverterErr_InvalidInputSize:
                 var result: CMSampleBuffer?
                 var timing: CMSampleTimingInfo = CMSampleTimingInfo(sampleBuffer: sampleBuffer)
@@ -244,42 +231,15 @@ class AudioEncoder: NSObject {
                 CMSampleBufferSetDataBufferFromAudioBufferList(result!, kCFAllocatorDefault, kCFAllocatorDefault, 0, outputData.unsafePointer)
                 
                 delegate?.didEncode(sampleBuffer: result!)
-                finished = true
-            case -1:
-                finished = true
-            default:
-                finished = true
-            }
-            
-            for i in 0..<outputData.count {
-                free(outputData[i].mData)
-            }
-            
-            free(outputData.unsafeMutablePointer)
-        } while !finished
+            default: break;
+        }
+        
+        for i in 0..<outputData.count {
+            free(outputData[i].mData)
+        }
+        
+        free(outputData.unsafeMutablePointer)
     }
-    /* Objective-C : adts
-     - (NSData*) adtsDataForPacketLength:(NSUInteger)packetLength {
-     int adtsLength = 7;
-     char *packet = malloc(sizeof(char) * adtsLength);
-     // Variables Recycled by addADTStoPacket
-     int profile = 2;  //AAC LC
-     //39=MediaCodecInfo.CodecProfileLevel.AACObjectELD;
-     int freqIdx = 4;  //44.1KHz
-     int chanCfg = 1;  //MPEG-4 Audio Channel Configuration. 1 Channel front-center
-     NSUInteger fullLength = adtsLength + packetLength;
-     // fill in ADTS data
-     packet[0] = (char)0xFF; // 11111111     = syncword
-     packet[1] = (char)0xF9; // 1111 1 00 1  = syncword MPEG-2 Layer CRC
-     packet[2] = (char)(((profile-1)<<6) + (freqIdx<<2) +(chanCfg>>2));
-     packet[3] = (char)(((chanCfg&3)<<6) + (fullLength>>11));
-     packet[4] = (char)((fullLength&0x7FF) >> 3);
-     packet[5] = (char)(((fullLength&7)<<5) + 0x1F);
-     packet[6] = (char)0xFC;
-     NSData *data = [NSData dataWithBytesNoCopy:packet length:adtsLength freeWhenDone:YES];
-     return data;
-     }
-     */
 
     func encode() {
         print("[AudioEncoder] encode");
