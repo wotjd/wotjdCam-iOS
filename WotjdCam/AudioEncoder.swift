@@ -112,13 +112,13 @@ class AudioEncoder: NSObject {
         var inAudioStreamBasicDescription = CMAudioFormatDescriptionGetStreamBasicDescription(CMSampleBufferGetFormatDescription(sampleBuffer)!)!.pointee
         
         var outAudioStreamBasicDescription : AudioStreamBasicDescription = AudioStreamBasicDescription(
-            mSampleRate: inAudioStreamBasicDescription.mSampleRate,
+            mSampleRate: 44100, // inAudioStreamBasicDescription.mSampleRate,
             mFormatID: kAudioFormatMPEG4AAC,
             mFormatFlags: UInt32(MPEG4ObjectID.AAC_LC.rawValue),
             mBytesPerPacket: 0,
             mFramesPerPacket: 1024,
             mBytesPerFrame: 0,
-            mChannelsPerFrame: 1,
+            mChannelsPerFrame: inAudioStreamBasicDescription.mChannelsPerFrame,
             mBitsPerChannel: 0,
             mReserved: 0)
     
@@ -126,7 +126,7 @@ class AudioEncoder: NSObject {
             kCFAllocatorDefault, &outAudioStreamBasicDescription, 0, nil, 0, nil, nil, &formatDescription
         )
         
-        var status = AudioConverterNewSpecific(
+        let status = AudioConverterNewSpecific(
             &inAudioStreamBasicDescription,
             &outAudioStreamBasicDescription,
             1, &classDescription,
@@ -134,6 +134,13 @@ class AudioEncoder: NSObject {
         
         if status != noErr {
             print("error : \(status.description)")
+        }
+        
+        var outputBitRate = 192000
+        let propSize = UInt32(MemoryLayout.size(ofValue: outputBitRate))
+        guard let converter = self.converter, AudioConverterSetProperty(converter, kAudioConverterEncodeBitRate, propSize, &outputBitRate) == 0 else {
+            print("setting bitrate")
+            return
         }
     }
     

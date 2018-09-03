@@ -40,9 +40,12 @@ xcodeproj 의 provisioning 정보, bundle identifier 를 추가 설정해야할 
 2. Camera 탭 : 개발 중인 탭
 
    - FrameExtractor : Camera, Mic 로 부터 Raw 스트림을 받고, Callback 호출 처리하는 코드가 존재
-
    - CameraViewController : View 관리 및 FrameExtractor, A/V 인코더의 대리자 역할을 하여 인코딩된 결과물을 처리하는 코드가 존재
-   - VideoEncoder, AudioEncoder : A/V Raw 데이터를 인코딩 (yuv to H264, pcm to aac)
+   - VideoEncoder : Video Raw 데이터를 인코딩 (yuv to H264)
+   - AudioEncoder : Audio Raw 데이터를 인코딩 (pcm to aac)
+     - 초기화 코드가 없음
+   - AVWriter : H.264/AAC 혹은 yuv/pcm 데이터를 로컬 재생 가능한 mp4 형태로 저장
+     - 현재는 Audio 없이 Video 만 저장시킬 수 있음
 3. Live 탭 : HaishinKit 라이브러리를 이용하여 실시간 HLS 스트리밍 하는 코드가 존재
 
 ### Known issue
@@ -55,6 +58,22 @@ xcodeproj 의 provisioning 정보, bundle identifier 를 추가 설정해야할 
      - 1초에 수십번씩 yuv -> image 로 컨버팅하면서 생기는 현상으로 추정 (updateView 비활성화 시 정상적임)
    - 해결방법 (추정)
      - view 에 직접 업데이트 하는 코드를 지우고, AVCaptureVideoPreviewLayer 를 사용
+     - 위 방법으로 수정하여 해결됨
+2. Init 후 홈화면에 갔다와서 다시 녹화 시 오디오 인코딩 실패, 녹화 종료 시 Crash 발생
+   - AudioEncoder 를 초기화 하지 않아 생기는 현상으로 추정
+3. AAC 데이터 AVAssetWriter 에 Input 으로 지정할 경우 파일 저장 안됨
+   - AAC 인코딩된 데이터에 문제가 있거나 설정 파라미터를 지정하지 않아 생기는 현상으로 추정
+
+### TODO
+
+1. AudioConverter 수정하여 제대로 인코딩 되는지 테스트 및 확인
+2. Audio도 AVAssetWriter의 Input 으로 포함하여 파일로 저장이 가능하도록 수정
+
+### 참고 링크
+
+1. Video Encoding 관련
+
+   https://www.slideshare.net/instinctools_EE_Labs/videostream-compression-in-ios
 
 # DummyUploadServer 
 

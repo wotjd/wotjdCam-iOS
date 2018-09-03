@@ -12,9 +12,10 @@ import VideoToolbox
 import CoreFoundation
 
 protocol FrameExtractorDelegate: class {
-    func compressToH264(sampleBuffer: CVImageBuffer, presentationTimeStamp: CMTime, duration: CMTime)
-    func compressToAAC(sampleBuffer: CMSampleBuffer)
-    func videoCaptured(image: UIImage)
+    func compressToH264(_ sampleBuffer: CMSampleBuffer)
+    func compressToAAC(_ sampleBuffer: CMSampleBuffer)
+    @available(*, deprecated:1.0, message: "use compressToAAC(_:)")
+    func compressToH264(_ sampleBuffer: CVImageBuffer, presentationTimeStamp: CMTime, duration: CMTime)
 }
 
 // The way AVCaptureVideoDataOutput works is by having a delegate object
@@ -23,6 +24,7 @@ class FrameExtractor : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, A
     // The session coordinates the flow of data from the input to output
     weak var delegate: FrameExtractorDelegate?
     private let captureSession = AVCaptureSession()
+    private var previewLayer : AVCaptureVideoPreviewLayer!
     
     // create a serial queue, to be not blocked main thread when use the session
     private let sessionQueue = DispatchQueue(label: "session queue")
@@ -35,14 +37,51 @@ class FrameExtractor : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, A
     
     private let context = CIContext()
     
-    override init() {
+    var isCapturing = false
+    
+    init(_ view: UIView) {
         super.init()
 //        print("FrameExtractor : Init")
         checkPermission()
-        sessionQueue.sync { [unowned self] in
-            self.configureSession()
-            self.captureSession.startRunning()
+        self.configureSession()
+        self.setPreview(view)
+    }
+    
+    func startSession() {
+        if !self.captureSession.isRunning {
+            sessionQueue.sync { [unowned self] in
+                self.captureSession.startRunning()
+            }
         }
+    }
+    
+    func stopSession() {
+        self.stopCapturing()
+        if self.captureSession.isRunning {
+            self.sessionQueue.async {
+                self.captureSession.stopRunning()
+            }
+        }
+    }
+    
+    func startCapturing() {
+        if self.captureSession.isRunning {
+            print("start capturing...")
+            self.isCapturing = true
+        }
+    }
+    
+    func stopCapturing() {
+        print("stop capturing..")
+        self.isCapturing = false
+    }
+    
+    func setPreview(_ view: UIView) {
+        self.previewLayer = AVCaptureVideoPreviewLayer(session: self.captureSession)
+        self.previewLayer.frame = view.bounds
+        self.previewLayer.videoGravity = .resizeAspectFill
+        view.layer.addSublayer(self.previewLayer)
+        print("layer added")
     }
     
     // MARK: AVSession configuration
@@ -50,13 +89,13 @@ class FrameExtractor : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, A
         switch AVCaptureDevice.authorizationStatus(for: AVMediaType.video) {
         case .authorized :
             // The user has explicitly granted permission for media capture
-            permissionGranted = true
+            self.permissionGranted = true
         case .notDetermined :
             // The user has not yet been presented with the option to grant video access
-            requestPermission()
+            self.requestPermission()
         default :
             // The user has denied permisssion
-            permissionGranted = false
+            self.permissionGranted = false
         }
     }
     
@@ -99,6 +138,7 @@ class FrameExtractor : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, A
         guard let connection = videoOutput.connection(with: AVMediaType.video) else { return }
         guard connection.isVideoOrientationSupported else { return }
         connection.videoOrientation = currentVideoOrientation()
+//        connection.videoOrientation = AVCaptureVideoOrientation.landscapeLeft
         guard connection.isVideoMirroringSupported else { return }
         connection.isVideoMirrored = position == .front
         
@@ -130,14 +170,10 @@ class FrameExtractor : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, A
         var orientation: AVCaptureVideoOrientation
         
         switch UIDevice.current.orientation {
-        case .portrait :
-            orientation = AVCaptureVideoOrientation.portrait
-        case .landscapeLeft :
-            orientation = AVCaptureVideoOrientation.landscapeLeft
-        case .landscapeRight :
+        case .portrait, .landscapeRight :
             orientation = AVCaptureVideoOrientation.landscapeRight
         default :
-            orientation = AVCaptureVideoOrientation.portraitUpsideDown
+            orientation = AVCaptureVideoOrientation.landscapeLeft
         }
         
         return orientation
@@ -161,33 +197,35 @@ class FrameExtractor : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, A
     }
     
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        if output is AVCaptureVideoDataOutput {
-            updateView(sampleBuffer)
-            compressVideo(sampleBuffer)
-//            print("video : pts = \(String(CMSampleBufferGetPresentationTimeStamp(sampleBuffer).value))")
-        } else if output is AVCaptureAudioDataOutput {
-            compressAudio(sampleBuffer)
-//            print("audio : pts = \(String(CMSampleBufferGetPresentationTimeStamp(sampleBuffer).value))")
-        } else {
-            print("not av stream")
+        if self.isCapturing {
+            if output is AVCaptureVideoDataOutput {
+                compressVideo(sampleBuffer)
+//                self.delegate?.compressToH264(sampleBuffer: sampleBuffer)
+    //            print("video : pts = \(String(CMSampleBufferGetPresentationTimeStamp(sampleBuffer).value))")
+            } else if output is AVCaptureAudioDataOutput {
+                compressAudio(sampleBuffer)
+    //            print("audio : pts = \(String(CMSampleBufferGetPresentationTimeStamp(sampleBuffer).value))")
+            } else {
+                print("not av stream")
+            }
         }
     }
     
     func compressAudio(_ sampleBuffer: CMSampleBuffer) {
-//        guard let buffer
-        
-        self.delegate?.compressToAAC(sampleBuffer: sampleBuffer)
-        
-        return
+        self.delegate?.compressToAAC(sampleBuffer)
     }
     
     func compressVideo(_ sampleBuffer: CMSampleBuffer) {
-        guard let buffer: CVImageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
-            print("[FrameExtractor] cannot get CVImageBuffer")
-            return
-        }
-        
-        self.delegate?.compressToH264(sampleBuffer: buffer, presentationTimeStamp: CMSampleBufferGetPresentationTimeStamp(sampleBuffer), duration: CMSampleBufferGetDuration(sampleBuffer));
+        self.delegate?.compressToH264(sampleBuffer)
+        /*
+        if false {
+            guard let buffer: CVImageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+                print("[FrameExtractor] cannot get CVImageBuffer")
+                return
+            }
+            
+            self.delegate?.compressToH264(buffer, presentationTimeStamp: CMSampleBufferGetPresentationTimeStamp(sampleBuffer), duration: CMSampleBufferGetDuration(sampleBuffer))
+        }*/
     }
     
     var lastVideo: Int64 = 0
@@ -208,9 +246,9 @@ class FrameExtractor : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, A
         
 //        print("video frame (dts : \(dts), pts : \(pts), duaration : \(duration)")
         
-        guard let uiImage = self.imageFromSampleBuffer(sampleBuffer: sampleBuffer) else { return }
+        guard self.imageFromSampleBuffer(sampleBuffer: sampleBuffer) != nil else { return }
         DispatchQueue.main.async { [unowned self] in
-            self.delegate?.videoCaptured(image: uiImage)
+//            self.delegate?.videoCaptured(image: uiImage)
         }
     }
 }

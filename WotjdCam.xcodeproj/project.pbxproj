@@ -7,10 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2F2FC35F212EADD4009C2AF3 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F2FC35E212EADD4009C2AF3 /* Alamofire.framework */; };
 		2F49FAE9212BFB3700556F99 /* LiveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F49FAE8212BFB3700556F99 /* LiveViewController.swift */; };
-		2F49FAEA212C054B00556F99 /* HaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F49FAE3212BFAA000556F99 /* HaishinKit.framework */; };
-		2F49FAEB212C054B00556F99 /* Logboard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F49FAE5212BFAA400556F99 /* Logboard.framework */; };
 		2FA8E10C2133C7AC00BF624A /* AudioEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FA8E10B2133C7AC00BF624A /* AudioEncoder.swift */; };
 		2FC42654211BD917007B3099 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FC42653211BD917007B3099 /* AppDelegate.swift */; };
 		2FC42656211BD917007B3099 /* AuthorizationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FC42655211BD917007B3099 /* AuthorizationViewController.swift */; };
@@ -22,8 +19,102 @@
 		2FC42696211BF84F007B3099 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FC42695211BF84F007B3099 /* UIKit.framework */; };
 		2FC426A9211D974B007B3099 /* FrameExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FC426A8211D974B007B3099 /* FrameExtractor.swift */; };
 		2FC426AB21215009007B3099 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FC426AA21215009007B3099 /* CameraViewController.swift */; };
+		2FC4CADE2138E162000B548E /* AVWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FC4CADD2138E162000B548E /* AVWriter.swift */; };
+		2FC4CAE0213909C5000B548E /* CameraButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FC4CADF213909C5000B548E /* CameraButton.swift */; };
+		2FC4CAE121391F6B000B548E /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F2FC35E212EADD4009C2AF3 /* Alamofire.framework */; };
+		2FC4CAE221391F72000B548E /* Logboard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F49FAE5212BFAA400556F99 /* Logboard.framework */; };
+		2FC4CB0121391FDB000B548E /* HaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FC4CAF021391FB7000B548E /* HaishinKit.framework */; };
+		2FC4CB0221391FEE000B548E /* HaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FC4CAF021391FB7000B548E /* HaishinKit.framework */; };
+		2FC4CB0321391FEE000B548E /* HaishinKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2FC4CAF021391FB7000B548E /* HaishinKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		2FCC7C49212D32DB00BBDF92 /* VideoEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FCC7C48212D32DB00BBDF92 /* VideoEncoder.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		2FC4CAEF21391FB7000B548E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2FC4CAE321391FB6000B548E /* HaishinKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 2945CBBD1B4BE66000104112;
+			remoteInfo = "HaishinKit iOS";
+		};
+		2FC4CAF121391FB7000B548E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2FC4CAE321391FB6000B548E /* HaishinKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 29B8761B1CD701F900FC07DA;
+			remoteInfo = "HaishinKit macOS";
+		};
+		2FC4CAF321391FB7000B548E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2FC4CAE321391FB6000B548E /* HaishinKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 29D3D4DC1ED0509900DD4AA6;
+			remoteInfo = "HaishinKit tvOS";
+		};
+		2FC4CAF521391FB7000B548E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2FC4CAE321391FB6000B548E /* HaishinKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 29C9327E1CD76FB800283FC5;
+			remoteInfo = "Example iOS";
+		};
+		2FC4CAF721391FB7000B548E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2FC4CAE321391FB6000B548E /* HaishinKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 29C932941CD76FD300283FC5;
+			remoteInfo = "Example macOS";
+		};
+		2FC4CAF921391FB7000B548E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2FC4CAE321391FB6000B548E /* HaishinKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 29D3D4EF1ED0531500DD4AA6;
+			remoteInfo = "Example tvOS";
+		};
+		2FC4CAFB21391FB7000B548E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2FC4CAE321391FB6000B548E /* HaishinKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 2915EC521D85BDF100621092;
+			remoteInfo = Screencast;
+		};
+		2FC4CAFD21391FB7000B548E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2FC4CAE321391FB6000B548E /* HaishinKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 2915EC5F1D85BDF100621092;
+			remoteInfo = ScreencastUI;
+		};
+		2FC4CAFF21391FB7000B548E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2FC4CAE321391FB6000B548E /* HaishinKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 29798E591CE60E5300F5CBD0;
+			remoteInfo = Tests;
+		};
+		2FC4CB0421391FEE000B548E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2FC4CAE321391FB6000B548E /* HaishinKit.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 2945CBBC1B4BE66000104112;
+			remoteInfo = "HaishinKit iOS";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		2FC4CB0621391FEF000B548E /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				2FC4CB0321391FEE000B548E /* HaishinKit.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		2F2FC35E212EADD4009C2AF3 /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = WotjdCam/Carthage/Build/iOS/Alamofire.framework; sourceTree = "<group>"; };
@@ -44,6 +135,9 @@
 		2FC42695211BF84F007B3099 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		2FC426A8211D974B007B3099 /* FrameExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameExtractor.swift; sourceTree = "<group>"; };
 		2FC426AA21215009007B3099 /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
+		2FC4CADD2138E162000B548E /* AVWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVWriter.swift; sourceTree = "<group>"; };
+		2FC4CADF213909C5000B548E /* CameraButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraButton.swift; sourceTree = "<group>"; };
+		2FC4CAE321391FB6000B548E /* HaishinKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = HaishinKit.xcodeproj; path = WotjdCam/Carthage/Checkouts/HaishinKit.swift/HaishinKit.xcodeproj; sourceTree = "<group>"; };
 		2FCC7C48212D32DB00BBDF92 /* VideoEncoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoEncoder.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -52,9 +146,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2F49FAEA212C054B00556F99 /* HaishinKit.framework in Frameworks */,
-				2F49FAEB212C054B00556F99 /* Logboard.framework in Frameworks */,
-				2F2FC35F212EADD4009C2AF3 /* Alamofire.framework in Frameworks */,
+				2FC4CB0221391FEE000B548E /* HaishinKit.framework in Frameworks */,
+				2FC4CB0121391FDB000B548E /* HaishinKit.framework in Frameworks */,
+				2FC4CAE121391F6B000B548E /* Alamofire.framework in Frameworks */,
+				2FC4CAE221391F72000B548E /* Logboard.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -81,6 +176,7 @@
 		2FC42647211BD917007B3099 = {
 			isa = PBXGroup;
 			children = (
+				2FC4CAE321391FB6000B548E /* HaishinKit.xcodeproj */,
 				2FC42652211BD917007B3099 /* WotjdCam */,
 				2FC42688211BF84F007B3099 /* Frameworks */,
 				2FC42651211BD917007B3099 /* Products */,
@@ -103,9 +199,11 @@
 				2FC42653211BD917007B3099 /* AppDelegate.swift */,
 				2FC42655211BD917007B3099 /* AuthorizationViewController.swift */,
 				2FC426AA21215009007B3099 /* CameraViewController.swift */,
+				2FC4CADF213909C5000B548E /* CameraButton.swift */,
 				2FC426A8211D974B007B3099 /* FrameExtractor.swift */,
 				2FA8E10B2133C7AC00BF624A /* AudioEncoder.swift */,
 				2FCC7C48212D32DB00BBDF92 /* VideoEncoder.swift */,
+				2FC4CADD2138E162000B548E /* AVWriter.swift */,
 				2F49FAE8212BFB3700556F99 /* LiveViewController.swift */,
 				2FC42657211BD917007B3099 /* Main.storyboard */,
 				2FC4265A211BD918007B3099 /* Assets.xcassets */,
@@ -127,6 +225,22 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		2FC4CAE421391FB6000B548E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2FC4CAF021391FB7000B548E /* HaishinKit.framework */,
+				2FC4CAF221391FB7000B548E /* HaishinKit.framework */,
+				2FC4CAF421391FB7000B548E /* HaishinKit.framework */,
+				2FC4CAF621391FB7000B548E /* Example iOS.app */,
+				2FC4CAF821391FB7000B548E /* Example macOS.app */,
+				2FC4CAFA21391FB7000B548E /* Example tvOS.app */,
+				2FC4CAFC21391FB7000B548E /* Screencast.appex */,
+				2FC4CAFE21391FB7000B548E /* ScreencastUI.appex */,
+				2FC4CB0021391FB7000B548E /* Tests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -138,10 +252,12 @@
 				2FC4264D211BD917007B3099 /* Frameworks */,
 				2FC4264E211BD917007B3099 /* Resources */,
 				2F49FAE7212BFAC000556F99 /* ShellScript */,
+				2FC4CB0621391FEF000B548E /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				2FC4CB0521391FEE000B548E /* PBXTargetDependency */,
 			);
 			name = WotjdCam;
 			productName = WotjdCam;
@@ -214,6 +330,12 @@
 			mainGroup = 2FC42647211BD917007B3099;
 			productRefGroup = 2FC42651211BD917007B3099 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 2FC4CAE421391FB6000B548E /* Products */;
+					ProjectRef = 2FC4CAE321391FB6000B548E /* HaishinKit.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				2FC4264F211BD917007B3099 /* WotjdCam */,
@@ -222,6 +344,72 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		2FC4CAF021391FB7000B548E /* HaishinKit.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = HaishinKit.framework;
+			remoteRef = 2FC4CAEF21391FB7000B548E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		2FC4CAF221391FB7000B548E /* HaishinKit.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = HaishinKit.framework;
+			remoteRef = 2FC4CAF121391FB7000B548E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		2FC4CAF421391FB7000B548E /* HaishinKit.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = HaishinKit.framework;
+			remoteRef = 2FC4CAF321391FB7000B548E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		2FC4CAF621391FB7000B548E /* Example iOS.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = "Example iOS.app";
+			remoteRef = 2FC4CAF521391FB7000B548E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		2FC4CAF821391FB7000B548E /* Example macOS.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = "Example macOS.app";
+			remoteRef = 2FC4CAF721391FB7000B548E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		2FC4CAFA21391FB7000B548E /* Example tvOS.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = "Example tvOS.app";
+			remoteRef = 2FC4CAF921391FB7000B548E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		2FC4CAFC21391FB7000B548E /* Screencast.appex */ = {
+			isa = PBXReferenceProxy;
+			fileType = "wrapper.app-extension";
+			path = Screencast.appex;
+			remoteRef = 2FC4CAFB21391FB7000B548E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		2FC4CAFE21391FB7000B548E /* ScreencastUI.appex */ = {
+			isa = PBXReferenceProxy;
+			fileType = "wrapper.app-extension";
+			path = ScreencastUI.appex;
+			remoteRef = 2FC4CAFD21391FB7000B548E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		2FC4CB0021391FB7000B548E /* Tests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = Tests.xctest;
+			remoteRef = 2FC4CAFF21391FB7000B548E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		2FC4264E211BD917007B3099 /* Resources */ = {
@@ -258,7 +446,6 @@
 			);
 			inputPaths = (
 				"$(SRCROOT)/WotjdCam/Carthage/Build/iOS/Logboard.framework",
-				"$(SRCROOT)/WotjdCam/Carthage/Build/iOS/HaishinKit.framework",
 				"$(SRCROOT)/WotjdCam/Carthage/Build/iOS/Alamofire.framework",
 			);
 			outputPaths = (
@@ -274,6 +461,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2FC4CADE2138E162000B548E /* AVWriter.swift in Sources */,
+				2FC4CAE0213909C5000B548E /* CameraButton.swift in Sources */,
 				2FC42656211BD917007B3099 /* AuthorizationViewController.swift in Sources */,
 				2FC426AB21215009007B3099 /* CameraViewController.swift in Sources */,
 				2FC426A9211D974B007B3099 /* FrameExtractor.swift in Sources */,
@@ -299,6 +488,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		2FC4CB0521391FEE000B548E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "HaishinKit iOS";
+			targetProxy = 2FC4CB0421391FEE000B548E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		2FC42657211BD917007B3099 /* Main.storyboard */ = {
@@ -437,6 +634,7 @@
 		2FC42663211BD918007B3099 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = BY96HCBY6M;
@@ -460,6 +658,7 @@
 		2FC42664211BD918007B3099 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = BY96HCBY6M;
