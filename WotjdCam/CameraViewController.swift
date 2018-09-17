@@ -27,8 +27,8 @@ class CameraViewController : UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         initFrameExtractor()
-        initVideoDecoder()
-        initAudioDecoder()
+        initVideoEncoder()
+        initAudioEncoder()
         initAVWriter()
     }
     
@@ -64,7 +64,7 @@ class CameraViewController : UIViewController {
 
 extension CameraViewController {
     func initAVWriter() {
-        self.avWriter = AVWriter(self.useWriterAsEncoder)
+        self.avWriter = AVWriter(self.useWriterAsEncoder, false)
     }
     
     func getTempPath() -> URL? {
@@ -118,13 +118,14 @@ extension CameraViewController : FrameExtractorDelegate {
 }
 
 extension CameraViewController : VideoEncoderDelegate {
-    func initVideoDecoder() {
+    func initVideoEncoder() {
         self.videoEncoder = VideoEncoder()
         
         self.videoEncoder!.delegate = self
     }
     
     func didEncodeFrame(frame: CMSampleBuffer) {
+        /* add sps, pps, ...
 //        print("frame encoded.")
         
         //----AVCC to Elem stream-----//
@@ -205,6 +206,7 @@ extension CameraViewController : VideoEncoderDelegate {
         
         let pts = CMSampleBufferGetPresentationTimeStamp(frame).value
 //        print("pts = \(String(pts))")
+        */
         if !self.useWriterAsEncoder {
             self.avWriter?.appendBuffer(frame, isVideo: true)
         } else {
@@ -234,7 +236,7 @@ extension CMBlockBuffer {
 }
 
 extension CameraViewController : AudioEncoderDelegate {
-    func initAudioDecoder() {
+    func initAudioEncoder() {
         self.audioEncoder = AudioEncoder()
         
         self.audioEncoder!.delegate = self
@@ -260,6 +262,7 @@ extension CameraViewController : AudioEncoderDelegate {
     }
     
     func didEncode(sampleBuffer: CMSampleBuffer) {
+        /* add adts
         guard let payload: Data = sampleBuffer.dataBuffer?.data else {
             print("sample data is null")
             return
@@ -271,6 +274,7 @@ extension CameraViewController : AudioEncoderDelegate {
         
         let pts = CMSampleBufferGetPresentationTimeStamp(sampleBuffer).value
 //        print("[AudioEncoderDelegate] encoded : pts = \(String(pts))")
+        */
         if !self.useWriterAsEncoder {
             self.avWriter?.appendBuffer(sampleBuffer, isVideo: false)
         } else {
