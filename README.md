@@ -50,30 +50,72 @@ xcodeproj 의 provisioning 정보, bundle identifier 를 추가 설정해야할 
 
 ### Known issue
 
+#### 진행중
+
+1. Init 후 홈화면에 갔다와서 다시 녹화 시 오디오 인코딩 실패, 녹화 종료 시 Crash 발생
+
+   - 원인
+     - AudioEncoder 를 초기화 하지 않아 생기는 현상으로 추정
+
+   - 해결방법
+     - 초기화 코드 추가 
+
+2. 
+
+#### 해결완료
+
 1. Camera 탭 진입 시 CPU 로드율이 지나치게 높음
    - CPU를 150%까지 로드 (Live 탭의 경우 20% 내외)
    - 원인
      - FrameExtractor 내 에서 카메라 화면을 업데이트 하기 위해 사용 하는 updateView 가 원인
      - updateView의 경우 CMSampleBuffer 데이터를 CMImage로 변환 후 view에 업데이트
      - 1초에 수십번씩 yuv -> image 로 컨버팅하면서 생기는 현상으로 추정 (updateView 비활성화 시 정상적임)
-   - 해결방법 (추정)
+   - 해결방법
      - view 에 직접 업데이트 하는 코드를 지우고, AVCaptureVideoPreviewLayer 를 사용
-     - 위 방법으로 수정하여 해결됨
-2. Init 후 홈화면에 갔다와서 다시 녹화 시 오디오 인코딩 실패, 녹화 종료 시 Crash 발생
-   - AudioEncoder 를 초기화 하지 않아 생기는 현상으로 추정
-3. AAC 데이터 AVAssetWriter 에 Input 으로 지정할 경우 파일 저장 안됨
-   - AAC 인코딩된 데이터에 문제가 있거나 설정 파라미터를 지정하지 않아 생기는 현상으로 추정
+2. AAC 데이터 AVAssetWriter 에 Input 으로 지정할 경우 파일 저장 안됨
+   - 원인
+     - 인코딩 후 만든 샘플버퍼에 샘플 사이즈가 없음 (kCMSampleBufferError_BufferHasNoSampleSizes)
+     - First input buffer must have an appropriate 에러 발생
+   - 해결방법
+     - AudioEncoding 후 CMSampleBufferCreate 대신 CMAudioSampleBufferCreateWithPacketDescriptions 호출)
+     - kCMSampleBufferAttachmentKey_TrimDurationAtStart 설정
+     - 자세한 사항은 참고링크 참고
 
 ### TODO
 
-1. AudioConverter 수정하여 제대로 인코딩 되는지 테스트 및 확인
-2. Audio도 AVAssetWriter의 Input 으로 포함하여 파일로 저장이 가능하도록 수정
+1. addAudioInput, addVideoInput 호출 위치 수정
+2. A/V Encoder, AVAssetWriter 초기화 코드 추가
 
 ### 참고 링크
 
 1. Video Encoding 관련
 
-   https://www.slideshare.net/instinctools_EE_Labs/videostream-compression-in-ios
+   - YUV -> H.264 로 직접 인코딩하는 Flow를 이미지로 설명한 사이트 : https://www.slideshare.net/instinctools_EE_Labs/videostream-compression-in-ios
+   - https://gist.github.com/kazz12211/3c8b7aa4c05260298130ba89dde2b22a
+
+2. Audio Encoding 관련
+
+   - "First input buffer must have an appropriate" 에러: https://stackoverflow.com/questions/35425951/cmsamplebufferref-kcmsamplebufferattachmentkey-trimdurationatstart-crash
+
+   - "kCMSampleBufferError_BufferHasNoSampleSizes" 에러 (해결방법은 아래링크) : https://stackoverflow.com/questions/50142384/muxing-aac-audio-and-h-264-video-streams-to-mp4-with-avfoundation 
+
+   - PCM -> AAC 인코딩 -> AVAssetWriter (to save file) 시 주의점, 필수 코딩 사항 :  https://stackoverflow.com/questions/36351327/aac-encoding-using-audioconverter-and-writing-to-avassetwriter
+   - AudioConverting 관련 Apple 공식 문서 : https://developer.apple.com/documentation/audiotoolbox/audio_converter_services
+
+3. 그 외 참고자료
+
+   - https://github.com/WowzaMediaSystems/gocoder-sdk-samples-ios/blob/master/SDKSampleApp/MP4Writer.m
+
+   - https://github.com/krad/kubrick/blob/41b1abcb79d58c9e70379bb314187c20ebabcf0f/Sources/kubrick/Encoders/AACEncoder.swift
+
+   - https://ko.wikipedia.org/wiki/비트레이트
+
+
+
+
+---
+
+
 
 # DummyUploadServer 
 
