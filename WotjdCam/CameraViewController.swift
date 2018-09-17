@@ -12,35 +12,53 @@ import CoreFoundation
 import VideoToolbox
 import Alamofire
 
+extension CMBlockBuffer {
+    var data: Data? {
+        var length: Int = 0
+        var buffer: UnsafeMutablePointer<Int8>? = nil
+        guard CMBlockBufferGetDataPointer(self, 0, nil, &length, &buffer) == noErr else {
+            return nil
+        }
+        return Data(bytes: buffer!, count: length)
+    }
+}
+
 class CameraViewController : UIViewController {
     var frameExtractor: FrameExtractor!
     var videoEncoder: VideoEncoder?
     var audioEncoder: AudioEncoder?
-    var avWriter: AVWriter?
+    var fileWriter: AVFileWriter?
     var firstFrame = false
     var isRecording = false
     let useWriterAsEncoder = false
     var currentPath : URL!
     
     @IBOutlet weak var camView: UIView!
+    @IBOutlet weak var recordSwitch: UISwitch!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         initFrameExtractor()
-        initVideoEncoder()
         initAudioEncoder()
-        initAVWriter()
+        initVideoEncoder()
+        initfileWriter()
     }
     
-    @IBAction func onRecord(_ sender: UIButton) {
-        if !self.isRecording {
-            self.frameExtractor.startCapturing()
-            currentPath = getTempPath()
-            self.avWriter?.startWriter(currentPath)
-            isRecording = true
-        } else {
+    func setRecordState(_ state: Bool) {
+        if state {
+            if !self.isRecording {
+                currentPath = getTempPath()
+                self.fileWriter?.startWriter(currentPath)
+                self.videoEncoder?.startEncoding()
+                self.audioEncoder?.startEncoding()
+                self.frameExtractor.startCapturing()
+                isRecording = true
+            }
+        } else if self.isRecording {
             self.frameExtractor.stopCapturing()
-            self.avWriter?.stopWriter { url in
+            self.audioEncoder?.stopEncoding()
+            self.videoEncoder?.stopEncoding()
+            self.fileWriter?.stopWriter { url in
                 print("writing has done : \(url)")
                 PHPhotoLibrary.shared().performChanges({ () -> Void in
                     PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: url)
@@ -52,8 +70,13 @@ class CameraViewController : UIViewController {
         }
     }
     
+    @IBAction func onRecord(_ sender: UISwitch) {
+        self.setRecordState(sender.isOn)
+    }
+    
     override func viewWillDisappear(_ animated: Bool) {
         self.frameExtractor.stopSession()
+        self.setRecordState(false)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -63,8 +86,8 @@ class CameraViewController : UIViewController {
 }
 
 extension CameraViewController {
-    func initAVWriter() {
-        self.avWriter = AVWriter(self.useWriterAsEncoder, false)
+    func initfileWriter() {
+        self.fileWriter = AVFileWriter(self.useWriterAsEncoder, false)
     }
     
     func getTempPath() -> URL? {
@@ -84,16 +107,13 @@ extension CameraViewController {
 extension CameraViewController : FrameExtractorDelegate {
     func initFrameExtractor() {
         self.frameExtractor = FrameExtractor(camView)
-        
-        // set viewController to be the delegate
         self.frameExtractor.delegate = self
-        
         self.frameExtractor.startSession()
     }
     
     func compressToH264(_ sampleBuffer: CMSampleBuffer) {
         if self.useWriterAsEncoder {
-            self.avWriter?.appendBuffer(sampleBuffer, isVideo: true)
+            self.fileWriter?.appendBuffer(sampleBuffer, isVideo: true)
         } else {
             guard let buffer: CVImageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
                 print("[FrameExtractor] cannot get CVImageBuffer")
@@ -104,13 +124,9 @@ extension CameraViewController : FrameExtractorDelegate {
         }
     }
     
-    func compressToH264(_ sampleBuffer: CVImageBuffer, presentationTimeStamp: CMTime, duration: CMTime) {
-        self.videoEncoder?.encode(sampleBuffer, presentationTimeStamp: presentationTimeStamp, duration: duration)
-    }
-    
     func compressToAAC(_ sampleBuffer: CMSampleBuffer) {
         if useWriterAsEncoder {
-            self.avWriter?.appendBuffer(sampleBuffer, isVideo: false)
+            self.fileWriter?.appendBuffer(sampleBuffer, isVideo: false)
         } else {
             self.audioEncoder?.encodeSampleBuffer(sampleBuffer)
         }
@@ -118,22 +134,36 @@ extension CameraViewController : FrameExtractorDelegate {
 }
 
 extension CameraViewController : VideoEncoderDelegate {
+    func didGetVideoFormatDescription(desc: CMFormatDescription?) {
+        guard desc != nil else {
+            return
+        }
+        self.fileWriter?.addVideoInput(desc)
+    }
+    
     func initVideoEncoder() {
         self.videoEncoder = VideoEncoder()
-        
         self.videoEncoder!.delegate = self
     }
     
-    func didEncodeFrame(frame: CMSampleBuffer) {
-        /* add sps, pps, ...
-//        print("frame encoded.")
+    func didEncodeH264(sampleBuffer: CMSampleBuffer) {
+        makeVideoPacket(sampleBuffer: sampleBuffer)
         
+        if !self.useWriterAsEncoder {
+            self.fileWriter?.appendBuffer(sampleBuffer, isVideo: true)
+        } else {
+            print("warning! encoded with custom encoder while useWriterAsEncoder flag has set!")
+        }
+//        Alamofire.upload(elementaryStream as Data , to: "http://192.168.0.10:3000/upload?av=video&pts=" + String(pts))
+    }
+    
+    func makeVideoPacket(sampleBuffer: CMSampleBuffer) {
         //----AVCC to Elem stream-----//
         let elementaryStream = NSMutableData()
         
         // 1. check if CMBuffer had I-frame
         var isIFrame:Bool = false
-        let attachmentsArray:CFArray = CMSampleBufferGetSampleAttachmentsArray(frame, false)!
+        let attachmentsArray:CFArray = CMSampleBufferGetSampleAttachmentsArray(sampleBuffer, false)!
         
         // check how many attachments
         if CFArrayGetCount(attachmentsArray) > 0 {
@@ -142,7 +172,7 @@ extension CameraViewController : VideoEncoderDelegate {
             
             // get value
             if CFDictionaryGetValue(dictRef, unsafeBitCast(kCMSampleAttachmentKey_NotSync, to: UnsafeRawPointer.self)) != nil {
-//                print ("IFrame found...")
+                //                print ("IFrame found...")
                 isIFrame = true
             }
         }
@@ -153,14 +183,14 @@ extension CameraViewController : VideoEncoderDelegate {
         
         // 3. write the SPS and PPS before I-frame
         if isIFrame {
-            let description:CMFormatDescription = CMSampleBufferGetFormatDescription(frame)!
+            let description:CMFormatDescription = CMSampleBufferGetFormatDescription(sampleBuffer)!
             
             // how many params
             var numParams:size_t = 0
             CMVideoFormatDescriptionGetH264ParameterSetAtIndex(description, 0, nil, nil, &numParams, nil)
             
             // write each param-set to elementary stream
-//            print("Write param to elementaryStream ", numParams)
+            //            print("Write param to elementaryStream ", numParams)
             for i in 0 ..< numParams {
                 var parameterSetPointer:UnsafePointer<UInt8>? = nil
                 var parameterSetLength:size_t = 0
@@ -173,8 +203,8 @@ extension CameraViewController : VideoEncoderDelegate {
         // 4. Get a pointer to the raw AVCC NAL unit data in the sample buffer
         var blockBufferLength:size_t = 0
         var bufferDataPointer: UnsafeMutablePointer<Int8>? = nil
-        CMBlockBufferGetDataPointer(CMSampleBufferGetDataBuffer(frame)!, 0, nil, &blockBufferLength, &bufferDataPointer)
-//        print ("Block length = ", blockBufferLength)
+        CMBlockBufferGetDataPointer(CMSampleBufferGetDataBuffer(sampleBuffer)!, 0, nil, &blockBufferLength, &bufferDataPointer)
+        //        print ("Block length = ", blockBufferLength)
         
         // 5. Loop through all the NAL units in the block buffer
         var bufferOffset:size_t = 0
@@ -184,12 +214,12 @@ extension CameraViewController : VideoEncoderDelegate {
             // Read the NAL unit length
             var NALUnitLength:UInt32 =  0
             memcpy(&NALUnitLength, bufferDataPointer! + bufferOffset, AVCCHeaderLength)
-
+            
             // Big-Endian to Little-Endian
             NALUnitLength = CFSwapInt32(NALUnitLength)
             
             if ( NALUnitLength > 0 ){
-//                print ( "NALUnitLen = ", NALUnitLength)
+                //                print ( "NALUnitLen = ", NALUnitLength)
                 
                 // Write start code to the elementary stream
                 elementaryStream.append(nStartCode, length: nStartCodeLength)
@@ -199,39 +229,13 @@ extension CameraViewController : VideoEncoderDelegate {
                 
                 // Move to the next NAL unit in the block buffer
                 bufferOffset += AVCCHeaderLength + size_t(NALUnitLength);
-//                print("Moving to next NALU...")
+                //                print("Moving to next NALU...")
             }
         }
-//        print("Read completed...")
+        //        print("Read completed...")
         
-        let pts = CMSampleBufferGetPresentationTimeStamp(frame).value
-//        print("pts = \(String(pts))")
-        */
-        if !self.useWriterAsEncoder {
-            self.avWriter?.appendBuffer(frame, isVideo: true)
-        } else {
-            print("warning! encoded with custom encoder while useWriterAsEncoder flag has set!")
-        }
-//        Alamofire.upload(elementaryStream as Data , to: "http://192.168.0.10:3000/upload?av=video&pts=" + String(pts))
-    }
-    
-    func didFailToEncodeFrame() {
-        print("frame drop while encoding")
-    }
-}
-
-extension CMBlockBuffer {
-    var dataLength: Int {
-        return CMBlockBufferGetDataLength(self)
-    }
-    
-    var data: Data? {
-        var length: Int = 0
-        var buffer: UnsafeMutablePointer<Int8>? = nil
-        guard CMBlockBufferGetDataPointer(self, 0, nil, &length, &buffer) == noErr else {
-            return nil
-        }
-        return Data(bytes: buffer!, count: length)
+        let pts = CMSampleBufferGetPresentationTimeStamp(sampleBuffer).value
+        //        print("pts = \(String(pts))")
     }
 }
 
@@ -240,6 +244,23 @@ extension CameraViewController : AudioEncoderDelegate {
         self.audioEncoder = AudioEncoder()
         
         self.audioEncoder!.delegate = self
+    }
+
+    func didGetAudioFormatDescription(desc: CMFormatDescription?) {
+        guard desc != nil else {
+            return
+        }
+
+        self.fileWriter?.addAudioInput(desc)
+    }
+    
+    func didEncodeAAC(sampleBuffer: CMSampleBuffer) {
+        makeAudioPacket(sampleBuffer)
+        
+        if !self.useWriterAsEncoder {
+            self.fileWriter?.appendBuffer(sampleBuffer, isVideo: false)
+        }
+//        Alamofire.upload(aac, to: "http://192.168.0.10:3000/upload?av=audio&pts=" + String(pts))
     }
     
     func getAdts(_ length: Int) -> [UInt8] {
@@ -261,8 +282,7 @@ extension CameraViewController : AudioEncoderDelegate {
         return adts
     }
     
-    func didEncode(sampleBuffer: CMSampleBuffer) {
-        /* add adts
+    func makeAudioPacket(_ sampleBuffer: CMSampleBuffer) {
         guard let payload: Data = sampleBuffer.dataBuffer?.data else {
             print("sample data is null")
             return
@@ -273,19 +293,5 @@ extension CameraViewController : AudioEncoderDelegate {
         aac.append(payload)
         
         let pts = CMSampleBufferGetPresentationTimeStamp(sampleBuffer).value
-//        print("[AudioEncoderDelegate] encoded : pts = \(String(pts))")
-        */
-        if !self.useWriterAsEncoder {
-            self.avWriter?.appendBuffer(sampleBuffer, isVideo: false)
-        } else {
-            print("warning! encoded with custom encoder while useWriterAsEncoder flag has set!")
-        }
-//        Alamofire.upload(aac, to: "http://192.168.0.10:3000/upload?av=audio&pts=" + String(pts))
     }
-    
-    func didFailToEncode() {
-        print("failed to encode")
-    }
-    
-
 }

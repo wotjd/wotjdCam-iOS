@@ -9,13 +9,12 @@
 import AVFoundation
 //import AssetsLibrary
 
-class AVWriter : NSObject {
+class AVFileWriter : NSObject {
     private var assetWriter: AVAssetWriter!
     private var videoInputWriter: AVAssetWriterInput!
     private var audioInputWriter: AVAssetWriterInput!
     private var isFirstFrame = true
     private var isFirstAudio = true
-//    private var startTime : CMTime
     private var isStarted = false
     private let asEncoder : Bool
     private let isAudioMuted : Bool
@@ -58,6 +57,12 @@ class AVWriter : NSObject {
     }
     
     func addVideoInput(_ formatDescription : CMFormatDescription?) {
+        guard videoInputWriter == nil && self.isStarted else {
+            print("videoInputWriter has already set")
+            return
+        }
+        
+        print("adding videoInputWriter")
         let videoOutputSettings: Dictionary<String, AnyObject>? = self.getVideoOutputSettings()
         
         self.videoInputWriter = AVAssetWriterInput(mediaType: AVMediaType.video, outputSettings: videoOutputSettings, sourceFormatHint: formatDescription)
@@ -67,23 +72,27 @@ class AVWriter : NSObject {
         if self.assetWriter.canAdd(self.videoInputWriter) {
             assetWriter.add(videoInputWriter)
         }
+        self.isFirstAudio = true
     }
     
     func addAudioInput(_ formatDescription : CMFormatDescription?) {
-        var format = ""
-        format += "\(CMFormatDescriptionGetMediaType(formatDescription!).description)/"
-        format += "\(CMFormatDescriptionGetMediaSubType(formatDescription!).description)"
-        print("addAudioInput: \(format)")
-        // => 1936684398/1819304813 == to ASCII (soun/lpcm) == kCMMediaType_Audio/kAudioFormatLinearPCM
-        // => 1936684398/1633772320 == to ASCII (soun/aac) == kCMMediaType_Audio/kAudioFormatMPEG4AAC
-        let audioOutputSettings: Dictionary<String, AnyObject>? = self.getAudioOutputSettings()
-        
-        self.audioInputWriter = AVAssetWriterInput(mediaType: AVMediaType.audio, outputSettings: audioOutputSettings, sourceFormatHint: formatDescription) //
-        
-        self.audioInputWriter.expectsMediaDataInRealTime = true
-        
-        if self.assetWriter.canAdd(self.audioInputWriter) {
-            assetWriter.add(audioInputWriter)
+        guard audioInputWriter == nil && self.isStarted else {
+            print("audioInputWriter has already set")
+            return
+        }
+        if isAudioMuted {
+            print("audio is muted")
+        } else {
+            print("adding audioInputWriter")
+            let audioOutputSettings: Dictionary<String, AnyObject>? = self.getAudioOutputSettings()
+            
+            self.audioInputWriter = AVAssetWriterInput(mediaType: AVMediaType.audio, outputSettings: audioOutputSettings, sourceFormatHint: formatDescription) //
+            
+            self.audioInputWriter.expectsMediaDataInRealTime = true
+            
+            if self.assetWriter.canAdd(self.audioInputWriter) {
+                assetWriter.add(audioInputWriter)
+            }
         }
     }
     
@@ -93,8 +102,6 @@ class AVWriter : NSObject {
             return
         }
         self.isFirstFrame = true
-        self.isFirstAudio = true
-//        self.startTime = CMClockGetTime(CMClockGetHostTimeClock())
         self.initAVWriter(url)
         self.isStarted = true
     }
@@ -110,18 +117,16 @@ class AVWriter : NSObject {
         }
         
         self.assetWriter.finishWriting {
+            self.videoInputWriter = nil
+            self.audioInputWriter = nil
+            
             callback(self.assetWriter.outputURL)
+            
+            self.assetWriter = nil
+            self.isStarted = false
         }
-        self.isStarted = false
-        /*
-         self.assetWriter.finishWriting { () -> Void in
-         if let blockCompletion = blockCompletion {
-         blockCompletion(self.assetWriter.outputURL, nil)
-         }
-         }*/
     }
     
-    var isFisrtA : Bool = true
     func appendBuffer(_ sampleBuffer: CMSampleBuffer, isVideo: Bool) {
         guard self.isStarted else {
             print("[AVWriter] appendBuffer : writer not started!")
@@ -130,11 +135,6 @@ class AVWriter : NSObject {
         
         if !isVideo && self.isFirstFrame {
             print("ignoring audio frame before first video frame..")
-            if self.isFirstAudio {
-                addAudioInput(CMSampleBufferGetFormatDescription(sampleBuffer))
-                self.isFirstAudio = false
-                
-            }
         } else if CMSampleBufferDataIsReady(sampleBuffer) {
             if self.assetWriter.status == AVAssetWriterStatus.unknown {
                 addVideoInput(CMSampleBufferGetFormatDescription(sampleBuffer))
@@ -156,11 +156,11 @@ class AVWriter : NSObject {
                 }
             } else if !self.isAudioMuted {
                 if self.audioInputWriter.isReadyForMoreMediaData {
-                    if isFisrtA {
+                    if self.isFirstAudio {
                         let dict = CMTimeCopyAsDictionary(CMTimeMake(1024, 44100), kCFAllocatorDefault)
                         CMSetAttachment(sampleBuffer, kCMSampleBufferAttachmentKey_TrimDurationAtStart, dict, kCMAttachmentMode_ShouldNotPropagate)
                         print("setting attachment.")
-                        isFisrtA = false
+                        self.isFirstAudio = false
                     }
                     if !self.audioInputWriter.append(sampleBuffer) {
                         print("Failed to append sample buffer to asset writer input: \(assetWriter.error!)")

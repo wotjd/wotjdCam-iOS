@@ -75,11 +75,12 @@ extension CMFormatDescription {
 }
 
 public protocol AudioEncoderDelegate : class {
-    func didEncode(sampleBuffer: CMSampleBuffer)
-    func didFailToEncode()
+    func didGetAudioFormatDescription(desc: CMFormatDescription?)
+    func didEncodeAAC(sampleBuffer: CMSampleBuffer)
 }
 
 class AudioEncoder: NSObject {
+    fileprivate let audioEncoderQueue = DispatchQueue(label: "AudioEncoder")
     var delegate: AudioEncoderDelegate? = nil
     
     var converter : AudioConverterRef? = nil
@@ -90,23 +91,43 @@ class AudioEncoder: NSObject {
         mSubType: kAudioFormatMPEG4AAC,
         mManufacturer: kAppleHardwareAudioCodecManufacturer)
     
-    var formatDescription: CMFormatDescription? = nil
-//    var formatDescription: CMFormatDescription? {
-//        didSet {
-//            if !CMFormatDescriptionEqual(formatDescription, oldValue) {
-//                delegate?.didSetFormatDescription(audio: formatDescription)
-//            }
-//        }
-//    }
+    var formatDescription: CMFormatDescription? {
+        didSet {
+            if !CMFormatDescriptionEqual(formatDescription, oldValue) {
+                delegate?.didGetAudioFormatDescription(desc: formatDescription)
+            }
+        }
+    }
     
     private var outAudioStreamBasicDescription : AudioStreamBasicDescription?
+    
+    var isRunning = false
     
     override init() {
         super.init()
     }
     
+    func startEncoding() {
+        audioEncoderQueue.async {
+            self.isRunning = true;
+        }
+    }
+    
+    func stopEncoding() {
+        audioEncoderQueue.async {
+            if self.converter != nil {
+                AudioConverterDispose(self.converter!)
+                self.converter = nil
+            }
+            self.formatDescription = nil
+            self.outAudioStreamBasicDescription = nil
+            self.currentBufferList = nil
+            self.isRunning = false
+        }
+    }
+    
     func setupEncoder(sampleBuffer: CMSampleBuffer) {
-        guard converter == nil else {
+        guard self.isRunning, converter == nil else {
             print("already created")
             return
         }
@@ -146,37 +167,6 @@ class AudioEncoder: NSObject {
         }
     }
     
-    func onInputDataForAudioConverter(
-        _ ioNumberDataPackets: UnsafeMutablePointer<UInt32>,
-        ioData: UnsafeMutablePointer<AudioBufferList>,
-        outDataPacketDescription: UnsafeMutablePointer<UnsafeMutablePointer<AudioStreamPacketDescription>?>?) -> OSStatus {
-        
-        guard let bufferList: UnsafeMutableAudioBufferListPointer = currentBufferList else {
-            ioNumberDataPackets.pointee = 0
-            return -1
-        }
-        
-        memcpy(ioData, bufferList.unsafePointer, AudioBufferList.sizeInBytes(maximumBuffers: 1))
-        ioNumberDataPackets.pointee = 1
-        free(bufferList.unsafeMutablePointer)
-        currentBufferList = nil
-        
-        return noErr
-    }
-    
-    private var inputDataProc: AudioConverterComplexInputDataProc = {(
-        converter: AudioConverterRef,
-        ioNumberDataPackets: UnsafeMutablePointer<UInt32>,
-        ioData: UnsafeMutablePointer<AudioBufferList>,
-        outDataPacketDescription: UnsafeMutablePointer<UnsafeMutablePointer<AudioStreamPacketDescription>?>?,
-        inUserData: UnsafeMutableRawPointer?) in
-        return Unmanaged<AudioEncoder>.fromOpaque(inUserData!).takeUnretainedValue().onInputDataForAudioConverter(
-            ioNumberDataPackets,
-            ioData: ioData,
-            outDataPacketDescription: outDataPacketDescription
-        )
-    }
-    
     let inInputDataProc : AudioConverterComplexInputDataProc = {
         ( inAudioConverter : AudioConverterRef,
           ioNumberDataPackets: UnsafeMutablePointer<UInt32>,
@@ -185,96 +175,15 @@ class AudioEncoder: NSObject {
           inUserData: UnsafeMutableRawPointer? ) in
         
             var audioBufferList = inUserData!.assumingMemoryBound(to: AudioBufferList.self).pointee    // struct
-            //        var audioBufferList : AudioBufferList = Unmanaged<AudioBufferList>.fromOpaque(inUserData!).takeUnretainedValue()  // error : Unmanaged needs parameter type as class
 
             ioData.pointee.mBuffers.mData = audioBufferList.mBuffers.mData;
             ioData.pointee.mBuffers.mDataByteSize = audioBufferList.mBuffers.mDataByteSize;
         
         return noErr
     }
-    /*
-    func encodeSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
-        guard let format : CMAudioFormatDescription = CMSampleBufferGetFormatDescription(sampleBuffer) else {
-            return
-        }
-        
-        if converter == nil {
-            setupEncoder(sampleBuffer: sampleBuffer)
-        }
-        
-        var blockBuffer: CMBlockBuffer?
-        
-        currentBufferList = AudioBufferList.allocate(maximumBuffers: 1)
-        CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(
-            sampleBuffer, nil,
-            currentBufferList!.unsafeMutablePointer,
-            AudioBufferList.sizeInBytes(maximumBuffers: 1),
-            kCFAllocatorDefault, kCFAllocatorDefault, 0,
-            &blockBuffer)
-        
-        if blockBuffer == nil {
-            print("blockBuffer not available");
-            return
-        }
-        
-        var isOutputDataPacketSize: UInt32 = 1
-        let dataLength = CMBlockBufferGetDataLength(blockBuffer!);
-        
-        let outputData: UnsafeMutableAudioBufferListPointer = AudioBufferList.allocate(maximumBuffers: 1)
-        outputData[0].mData = UnsafeMutableRawPointer.allocate(byteCount: dataLength, alignment: 0)
-        outputData[0].mDataByteSize = UInt32(dataLength)
-        outputData[0].mNumberChannels = 1
-        
-        var packetDescription = AudioStreamPacketDescription()
-        
-        let status = AudioConverterFillComplexBuffer(
-            converter!,
-            inInputDataProc,
-            UnsafeMutableRawPointer(currentBufferList!.unsafeMutablePointer),
-//            Unmanaged.passUnretained(self).toOpaque(),
-            &isOutputDataPacketSize, outputData.unsafeMutablePointer, &packetDescription)
-        switch status {
-        // kAudioConverterErr_InvalidInputSize: perhaps mistake. but can support macOS BuiltIn Mic #61
-            case noErr, kAudioConverterErr_InvalidInputSize:
-                var result: CMSampleBuffer?
-                var timing: CMSampleTimingInfo = CMSampleTimingInfo(sampleBuffer: sampleBuffer)
-                let numSamples: CMItemCount = sampleBuffer.numSamples
-//                var sizeArrayCount: CMItemCount = 0
-//                var sizeArray: [Int] = []
-//
-//                CMSampleBufferGetSampleSizeArray(sampleBuffer, 0, nil, &sizeArrayCount)
-//                sizeArray = Array(repeating: 0, count:sizeArrayCount)
-//                CMSampleBufferGetSampleSizeArray(sampleBuffer, sizeArrayCount, &sizeArray, &sizeArrayCount)
-                CMSampleBufferCreate(kCFAllocatorDefault, nil, false, nil, nil, formatDescription, numSamples, 1, &timing, 0, nil, &result)
-                CMSampleBufferSetDataBufferFromAudioBufferList(result!, kCFAllocatorDefault, kCFAllocatorDefault, 0, outputData.unsafePointer)
-                
-                if CMSampleBufferGetSampleSizeArray(result!, 0, nil, nil) == kCMSampleBufferError_BufferHasNoSampleSizes {
-                    print("[AudioEncoder] sampleBuffer from audiobuffer has no sample size")
-                    if CMSampleBufferGetSampleSizeArray(sampleBuffer, 0, nil, nil) == kCMSampleBufferError_BufferHasNoSampleSizes {
-                        print("[AudioEncoder] original sampleBuffer also has no sample size")
-                    }
-                }
-                
-                
-//                var format = ""
-//                format += "\(CMFormatDescriptionGetMediaType(formatDescription!).description)/"
-//                format += "\(CMFormatDescriptionGetMediaSubType(formatDescription!).description)"
-//                print("audioEncoder : \(format)")
-                delegate?.didEncode(sampleBuffer: result!)
-            default: break;
-        }
-        
-        for i in 0..<outputData.count {
-            free(outputData[i].mData)
-        }
-        
-        free(outputData.unsafeMutablePointer)
-    }*/
-    
     
     func encodeSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
-        
-        guard let format : CMAudioFormatDescription = CMSampleBufferGetFormatDescription(sampleBuffer) else {
+        guard self.isRunning, let _ : CMAudioFormatDescription = CMSampleBufferGetFormatDescription(sampleBuffer) else {
             return
         }
         
@@ -317,8 +226,8 @@ class AudioEncoder: NSObject {
         // kAudioConverterErr_InvalidInputSize: perhaps mistake. but can support macOS BuiltIn Mic #61
         case noErr, kAudioConverterErr_InvalidInputSize:
             var result: CMSampleBuffer?
-            var timing: CMSampleTimingInfo = CMSampleTimingInfo(sampleBuffer: sampleBuffer)
-            let numSamples: CMItemCount = sampleBuffer.numSamples
+//            var timing: CMSampleTimingInfo = CMSampleTimingInfo(sampleBuffer: sampleBuffer)
+//            let numSamples: CMItemCount = sampleBuffer.numSamples
             
             CMAudioSampleBufferCreateWithPacketDescriptions(
                 kCFAllocatorDefault,
@@ -340,12 +249,7 @@ class AudioEncoder: NSObject {
                 }
             }
             
-            
-            //                var format = ""
-            //                format += "\(CMFormatDescriptionGetMediaType(formatDescription!).description)/"
-            //                format += "\(CMFormatDescriptionGetMediaSubType(formatDescription!).description)"
-            //                print("audioEncoder : \(format)")
-            delegate?.didEncode(sampleBuffer: result!)
+            delegate?.didEncodeAAC(sampleBuffer: result!)
         default: break;
         }
         
@@ -354,10 +258,5 @@ class AudioEncoder: NSObject {
         }
         
         free(outputData.unsafeMutablePointer)
-    }
-
-    
-    func encode() {
-        print("[AudioEncoder] encode");
     }
 }

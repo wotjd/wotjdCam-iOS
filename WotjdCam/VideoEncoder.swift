@@ -11,8 +11,8 @@ import VideoToolbox
 import CoreFoundation
 
 public protocol VideoEncoderDelegate : class {
-    func didEncodeFrame(frame: CMSampleBuffer)
-    func didFailToEncodeFrame()
+    func didGetVideoFormatDescription(desc: CMFormatDescription?)
+    func didEncodeH264(sampleBuffer: CMSampleBuffer)
 }
 
 class VideoEncoder: NSObject {
@@ -36,6 +36,19 @@ class VideoEncoder: NSObject {
             ] as NSObject
     ]
     
+    private var _formatDescription: CMFormatDescription?
+    private var formatDescription: CMFormatDescription? {
+        get {
+            return _formatDescription
+        }
+        set {
+            if !CMFormatDescriptionEqual(newValue, _formatDescription) {
+                _formatDescription = newValue
+                self.delegate?.didGetVideoFormatDescription(desc: _formatDescription)
+            }
+        }
+    }
+    
     private var callback: VTCompressionOutputCallback = {
         (outputCallbackRefCon: UnsafeMutableRawPointer?,
          sourceFrameRefCon: UnsafeMutableRawPointer?,
@@ -50,9 +63,8 @@ class VideoEncoder: NSObject {
         
         let encoder: VideoEncoder = Unmanaged<VideoEncoder>.fromOpaque(refCon).takeUnretainedValue()
         if let sampleBuffer: CMSampleBuffer = sampleBuffer, status == noErr {
-            encoder.delegate?.didEncodeFrame(frame: sampleBuffer)
-        } else {
-            encoder.delegate?.didFailToEncodeFrame()
+            encoder.formatDescription = CMSampleBufferGetFormatDescription(sampleBuffer)
+            encoder.delegate?.didEncodeH264(sampleBuffer: sampleBuffer)
         }
     }
     
@@ -87,8 +99,22 @@ class VideoEncoder: NSObject {
         }
     }
     
+    func startEncoding() {
+        guard let session = self.session else {
+            return
+        }
+        VTCompressionSessionPrepareToEncodeFrames(session)
+    }
+    
+    func stopEncoding() {
+        if self.session != nil {
+            self.session = nil
+        }
+        self.formatDescription = nil
+    }
+    
     func encode(_ imageBuffer: CVImageBuffer, presentationTimeStamp: CMTime, duration: CMTime) {
-        guard let session: VTCompressionSession = session else {
+        guard let session: VTCompressionSession = self.session else {
             print("[VideoEncoder] unavailable session")
             return
         }

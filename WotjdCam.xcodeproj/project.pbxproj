@@ -19,11 +19,10 @@
 		2FC42696211BF84F007B3099 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FC42695211BF84F007B3099 /* UIKit.framework */; };
 		2FC426A9211D974B007B3099 /* FrameExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FC426A8211D974B007B3099 /* FrameExtractor.swift */; };
 		2FC426AB21215009007B3099 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FC426AA21215009007B3099 /* CameraViewController.swift */; };
-		2FC4CADE2138E162000B548E /* AVWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FC4CADD2138E162000B548E /* AVWriter.swift */; };
+		2FC4CADE2138E162000B548E /* AVFileMuxer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FC4CADD2138E162000B548E /* AVFileMuxer.swift */; };
 		2FC4CAE0213909C5000B548E /* CameraButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FC4CADF213909C5000B548E /* CameraButton.swift */; };
 		2FC4CAE121391F6B000B548E /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F2FC35E212EADD4009C2AF3 /* Alamofire.framework */; };
 		2FC4CAE221391F72000B548E /* Logboard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F49FAE5212BFAA400556F99 /* Logboard.framework */; };
-		2FC4CB0121391FDB000B548E /* HaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FC4CAF021391FB7000B548E /* HaishinKit.framework */; };
 		2FC4CB0221391FEE000B548E /* HaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FC4CAF021391FB7000B548E /* HaishinKit.framework */; };
 		2FC4CB0321391FEE000B548E /* HaishinKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2FC4CAF021391FB7000B548E /* HaishinKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		2FCC7C49212D32DB00BBDF92 /* VideoEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FCC7C48212D32DB00BBDF92 /* VideoEncoder.swift */; };
@@ -135,7 +134,7 @@
 		2FC42695211BF84F007B3099 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		2FC426A8211D974B007B3099 /* FrameExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameExtractor.swift; sourceTree = "<group>"; };
 		2FC426AA21215009007B3099 /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
-		2FC4CADD2138E162000B548E /* AVWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVWriter.swift; sourceTree = "<group>"; };
+		2FC4CADD2138E162000B548E /* AVFileMuxer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVFileMuxer.swift; sourceTree = "<group>"; };
 		2FC4CADF213909C5000B548E /* CameraButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraButton.swift; sourceTree = "<group>"; };
 		2FC4CAE321391FB6000B548E /* HaishinKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = HaishinKit.xcodeproj; path = WotjdCam/Carthage/Checkouts/HaishinKit.swift/HaishinKit.xcodeproj; sourceTree = "<group>"; };
 		2FCC7C48212D32DB00BBDF92 /* VideoEncoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoEncoder.swift; sourceTree = "<group>"; };
@@ -147,7 +146,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				2FC4CB0221391FEE000B548E /* HaishinKit.framework in Frameworks */,
-				2FC4CB0121391FDB000B548E /* HaishinKit.framework in Frameworks */,
 				2FC4CAE121391F6B000B548E /* Alamofire.framework in Frameworks */,
 				2FC4CAE221391F72000B548E /* Logboard.framework in Frameworks */,
 			);
@@ -198,12 +196,12 @@
 			children = (
 				2FC42653211BD917007B3099 /* AppDelegate.swift */,
 				2FC42655211BD917007B3099 /* AuthorizationViewController.swift */,
-				2FC426AA21215009007B3099 /* CameraViewController.swift */,
 				2FC4CADF213909C5000B548E /* CameraButton.swift */,
+				2FC426AA21215009007B3099 /* CameraViewController.swift */,
 				2FC426A8211D974B007B3099 /* FrameExtractor.swift */,
 				2FA8E10B2133C7AC00BF624A /* AudioEncoder.swift */,
 				2FCC7C48212D32DB00BBDF92 /* VideoEncoder.swift */,
-				2FC4CADD2138E162000B548E /* AVWriter.swift */,
+				2FC4CADD2138E162000B548E /* AVFileMuxer.swift */,
 				2F49FAE8212BFB3700556F99 /* LiveViewController.swift */,
 				2FC42657211BD917007B3099 /* Main.storyboard */,
 				2FC4265A211BD918007B3099 /* Assets.xcassets */,
@@ -461,7 +459,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2FC4CADE2138E162000B548E /* AVWriter.swift in Sources */,
+				2FC4CADE2138E162000B548E /* AVFileMuxer.swift in Sources */,
 				2FC4CAE0213909C5000B548E /* CameraButton.swift in Sources */,
 				2FC42656211BD917007B3099 /* AuthorizationViewController.swift in Sources */,
 				2FC426AB21215009007B3099 /* CameraViewController.swift in Sources */,

@@ -14,8 +14,6 @@ import CoreFoundation
 protocol FrameExtractorDelegate: class {
     func compressToH264(_ sampleBuffer: CMSampleBuffer)
     func compressToAAC(_ sampleBuffer: CMSampleBuffer)
-    @available(*, deprecated:1.0, message: "use compressToAAC(_:)")
-    func compressToH264(_ sampleBuffer: CVImageBuffer, presentationTimeStamp: CMTime, duration: CMTime)
 }
 
 // The way AVCaptureVideoDataOutput works is by having a delegate object
@@ -200,11 +198,8 @@ class FrameExtractor : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, A
         if self.isCapturing {
             if output is AVCaptureVideoDataOutput {
                 compressVideo(sampleBuffer)
-//                self.delegate?.compressToH264(sampleBuffer: sampleBuffer)
-    //            print("video : pts = \(String(CMSampleBufferGetPresentationTimeStamp(sampleBuffer).value))")
             } else if output is AVCaptureAudioDataOutput {
                 compressAudio(sampleBuffer)
-    //            print("audio : pts = \(String(CMSampleBufferGetPresentationTimeStamp(sampleBuffer).value))")
             } else {
                 print("not av stream")
             }
@@ -217,38 +212,5 @@ class FrameExtractor : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, A
     
     func compressVideo(_ sampleBuffer: CMSampleBuffer) {
         self.delegate?.compressToH264(sampleBuffer)
-        /*
-        if false {
-            guard let buffer: CVImageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
-                print("[FrameExtractor] cannot get CVImageBuffer")
-                return
-            }
-            
-            self.delegate?.compressToH264(buffer, presentationTimeStamp: CMSampleBufferGetPresentationTimeStamp(sampleBuffer), duration: CMSampleBufferGetDuration(sampleBuffer))
-        }*/
-    }
-    
-    var lastVideo: Int64 = 0
-    var lastAudio: Int64 = 0
-    var frameCounter = 0
-    
-    // Fixme : load CPU too much
-    func updateView(_ sampleBuffer: CMSampleBuffer) {
-        var count: CMItemCount = 1
-        var info = CMSampleTimingInfo()
-        CMSampleBufferGetSampleTimingInfoArray(sampleBuffer, count, &info, &count)
-        
-        lastVideo = info.presentationTimeStamp.value
-        
-//        let dts = CGFloat(info.decodeTimeStamp.value) / CGFloat(info.decodeTimeStamp.timescale) // nan
-//        let duration = CGFloat(info.duration.value) / CGFloat(info.duration.timescale)          // nan
-//        let pts = CGFloat(info.presentationTimeStamp.value) / CGFloat(info.presentationTimeStamp.timescale)
-        
-//        print("video frame (dts : \(dts), pts : \(pts), duaration : \(duration)")
-        
-        guard self.imageFromSampleBuffer(sampleBuffer: sampleBuffer) != nil else { return }
-        DispatchQueue.main.async { [unowned self] in
-//            self.delegate?.videoCaptured(image: uiImage)
-        }
     }
 }
