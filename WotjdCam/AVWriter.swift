@@ -18,9 +18,11 @@ class AVWriter : NSObject {
 //    private var startTime : CMTime
     private var isStarted = false
     private let asEncoder : Bool
+    private let isAudioMuted : Bool
     
-    init(_ asEncoder: Bool) {
+    init(_ asEncoder: Bool, _ muteAudio: Bool) {
         self.asEncoder = asEncoder
+        self.isAudioMuted = muteAudio
         super.init()
     }
     
@@ -68,6 +70,12 @@ class AVWriter : NSObject {
     }
     
     func addAudioInput(_ formatDescription : CMFormatDescription?) {
+        var format = ""
+        format += "\(CMFormatDescriptionGetMediaType(formatDescription!).description)/"
+        format += "\(CMFormatDescriptionGetMediaSubType(formatDescription!).description)"
+        print("addAudioInput: \(format)")
+        // => 1936684398/1819304813 == to ASCII (soun/lpcm) == kCMMediaType_Audio/kAudioFormatLinearPCM
+        // => 1936684398/1633772320 == to ASCII (soun/aac) == kCMMediaType_Audio/kAudioFormatMPEG4AAC
         let audioOutputSettings: Dictionary<String, AnyObject>? = self.getAudioOutputSettings()
         
         self.audioInputWriter = AVAssetWriterInput(mediaType: AVMediaType.audio, outputSettings: audioOutputSettings, sourceFormatHint: formatDescription) //
@@ -75,7 +83,7 @@ class AVWriter : NSObject {
         self.audioInputWriter.expectsMediaDataInRealTime = true
         
         if self.assetWriter.canAdd(self.audioInputWriter) {
-//            assetWriter.add(audioInputWriter)
+            assetWriter.add(audioInputWriter)
         }
     }
     
@@ -97,7 +105,9 @@ class AVWriter : NSObject {
             return
         }
         self.videoInputWriter.markAsFinished()
-//        self.audioInputWriter.markAsFinished()
+        if !self.isAudioMuted {
+            self.audioInputWriter.markAsFinished()
+        }
         
         self.assetWriter.finishWriting {
             callback(self.assetWriter.outputURL)
@@ -111,6 +121,7 @@ class AVWriter : NSObject {
          }*/
     }
     
+    var isFisrtA : Bool = true
     func appendBuffer(_ sampleBuffer: CMSampleBuffer, isVideo: Bool) {
         guard self.isStarted else {
             print("[AVWriter] appendBuffer : writer not started!")
@@ -122,6 +133,7 @@ class AVWriter : NSObject {
             if self.isFirstAudio {
                 addAudioInput(CMSampleBufferGetFormatDescription(sampleBuffer))
                 self.isFirstAudio = false
+                
             }
         } else if CMSampleBufferDataIsReady(sampleBuffer) {
             if self.assetWriter.status == AVAssetWriterStatus.unknown {
@@ -135,16 +147,26 @@ class AVWriter : NSObject {
             
             if self.assetWriter.status == AVAssetWriterStatus.failed {
                 print("Error occured, isVideo = \(isVideo), status = \(self.assetWriter.status.rawValue), \(self.assetWriter.error!.localizedDescription)")
-                return
+//                return
             }
             
             if isVideo {
                 if self.videoInputWriter.isReadyForMoreMediaData {
                     self.videoInputWriter.append(sampleBuffer)
                 }
-            } else {
+            } else if !self.isAudioMuted {
                 if self.audioInputWriter.isReadyForMoreMediaData {
-//                    self.audioInputWriter.append(sampleBuffer)
+                    if isFisrtA {
+                        let dict = CMTimeCopyAsDictionary(CMTimeMake(1024, 44100), kCFAllocatorDefault)
+                        CMSetAttachment(sampleBuffer, kCMSampleBufferAttachmentKey_TrimDurationAtStart, dict, kCMAttachmentMode_ShouldNotPropagate)
+                        print("setting attachment.")
+                        isFisrtA = false
+                    }
+                    if !self.audioInputWriter.append(sampleBuffer) {
+                        print("Failed to append sample buffer to asset writer input: \(assetWriter.error!)")
+                        print("Audio file writer status: \(assetWriter.status.rawValue)")
+                        // 12735, kBufferHasNoSampleSizes
+                    }
                 }
             }
         }

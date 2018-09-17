@@ -27,8 +27,8 @@ class CameraViewController : UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         initFrameExtractor()
-        initVideoEncoder()
-        initAudioEncoder()
+        initVideoDecoder()
+        initAudioDecoder()
         initAVWriter()
     }
     
@@ -64,7 +64,7 @@ class CameraViewController : UIViewController {
 
 extension CameraViewController {
     func initAVWriter() {
-        self.avWriter = AVWriter(self.useWriterAsEncoder, false)
+        self.avWriter = AVWriter(self.useWriterAsEncoder)
     }
     
     func getTempPath() -> URL? {
@@ -109,20 +109,16 @@ extension CameraViewController : FrameExtractorDelegate {
     }
     
     func compressToAAC(_ sampleBuffer: CMSampleBuffer) {
-        
-//        self.avWriter?.appendBuffer(sampleBuffer, isVideo: false)
-        
         if useWriterAsEncoder {
             self.avWriter?.appendBuffer(sampleBuffer, isVideo: false)
         } else {
             self.audioEncoder?.encodeSampleBuffer(sampleBuffer)
         }
-        
     }
 }
 
 extension CameraViewController : VideoEncoderDelegate {
-    func initVideoEncoder() {
+    func initVideoDecoder() {
         self.videoEncoder = VideoEncoder()
         
         self.videoEncoder!.delegate = self
@@ -130,7 +126,7 @@ extension CameraViewController : VideoEncoderDelegate {
     
     func didEncodeFrame(frame: CMSampleBuffer) {
 //        print("frame encoded.")
-        /*
+        
         //----AVCC to Elem stream-----//
         let elementaryStream = NSMutableData()
         
@@ -209,7 +205,6 @@ extension CameraViewController : VideoEncoderDelegate {
         
         let pts = CMSampleBufferGetPresentationTimeStamp(frame).value
 //        print("pts = \(String(pts))")
-        */
         if !self.useWriterAsEncoder {
             self.avWriter?.appendBuffer(frame, isVideo: true)
         } else {
@@ -239,7 +234,7 @@ extension CMBlockBuffer {
 }
 
 extension CameraViewController : AudioEncoderDelegate {
-    func initAudioEncoder() {
+    func initAudioDecoder() {
         self.audioEncoder = AudioEncoder()
         
         self.audioEncoder!.delegate = self
