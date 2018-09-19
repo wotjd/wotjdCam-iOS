@@ -13,7 +13,7 @@ import CoreFoundation
 extension CMSampleBuffer {
     var dependsOnOthers: Bool {
         guard
-            let attachments = CMSampleBufferGetSampleAttachmentsArray(self, false) else {
+            let attachments = CMSampleBufferGetSampleAttachmentsArray(self, createIfNecessary: false) else {
                 return false
         }
         let attachment: [NSObject: AnyObject] = unsafeBitCast(CFArrayGetValueAtIndex(attachments, 0), to: CFDictionary.self) as [NSObject: AnyObject]
@@ -25,7 +25,7 @@ extension CMSampleBuffer {
         }
         set {
             _ = newValue.map {
-                CMSampleBufferSetDataBuffer(self, $0)
+                CMSampleBufferSetDataBuffer(self, newValue: $0)
             }
         }
     }
@@ -70,7 +70,7 @@ extension CMFormatDescription {
     }
     
     func `extension`(by key: String) -> [String: AnyObject]? {
-        return CMFormatDescriptionGetExtension(self, key as CFString) as? [String: AnyObject]
+        return CMFormatDescriptionGetExtension(self, extensionKey: key as CFString) as? [String: AnyObject]
     }
 }
 
@@ -93,7 +93,7 @@ class AudioEncoder: NSObject {
     
     var formatDescription: CMFormatDescription? {
         didSet {
-            if !CMFormatDescriptionEqual(formatDescription, oldValue) {
+            if !CMFormatDescriptionEqual(formatDescription, otherFormatDescription: oldValue) {
                 delegate?.didGetAudioFormatDescription(desc: formatDescription)
             }
         }
@@ -146,7 +146,7 @@ class AudioEncoder: NSObject {
             mReserved: 0)
     
         CMAudioFormatDescriptionCreate(
-            kCFAllocatorDefault, &self.outAudioStreamBasicDescription!, 0, nil, 0, nil, nil, &formatDescription
+            allocator: kCFAllocatorDefault, asbd: &self.outAudioStreamBasicDescription!, layoutSize: 0, layout: nil, magicCookieSize: 0, magicCookie: nil, extensions: nil, formatDescriptionOut: &formatDescription
         )
         
         let status = AudioConverterNewSpecific(
@@ -195,11 +195,11 @@ class AudioEncoder: NSObject {
         
         currentBufferList = AudioBufferList.allocate(maximumBuffers: 1)
         CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(
-            sampleBuffer, nil,
-            currentBufferList!.unsafeMutablePointer,
-            AudioBufferList.sizeInBytes(maximumBuffers: 1),
-            kCFAllocatorDefault, kCFAllocatorDefault, 0,
-            &blockBuffer)
+            sampleBuffer, bufferListSizeNeededOut: nil,
+            bufferListOut: currentBufferList!.unsafeMutablePointer,
+            bufferListSize: AudioBufferList.sizeInBytes(maximumBuffers: 1),
+            blockBufferAllocator: kCFAllocatorDefault, blockBufferMemoryAllocator: kCFAllocatorDefault, flags: 0,
+            blockBufferOut: &blockBuffer)
         
         if blockBuffer == nil {
             print("blockBuffer not available");
@@ -230,21 +230,21 @@ class AudioEncoder: NSObject {
 //            let numSamples: CMItemCount = sampleBuffer.numSamples
             
             CMAudioSampleBufferCreateWithPacketDescriptions(
-                kCFAllocatorDefault,
-                nil,
-                false,
-                nil,
-                nil,
-                formatDescription!,
-                Int(currentBufferList!.unsafePointer.pointee.mNumberBuffers),
-                CMSampleBufferGetPresentationTimeStamp(sampleBuffer), &packetDescription,
-                &result)
+                allocator: kCFAllocatorDefault,
+                dataBuffer: nil,
+                dataReady: false,
+                makeDataReadyCallback: nil,
+                refcon: nil,
+                formatDescription: formatDescription!,
+                sampleCount: Int(currentBufferList!.unsafePointer.pointee.mNumberBuffers),
+                presentationTimeStamp: CMSampleBufferGetPresentationTimeStamp(sampleBuffer), packetDescriptions: &packetDescription,
+                sampleBufferOut: &result)
             
-            CMSampleBufferSetDataBufferFromAudioBufferList(result!, kCFAllocatorDefault, kCFAllocatorDefault, 0, outputData.unsafePointer)
+            CMSampleBufferSetDataBufferFromAudioBufferList(result!, blockBufferAllocator: kCFAllocatorDefault, blockBufferMemoryAllocator: kCFAllocatorDefault, flags: 0, bufferList: outputData.unsafePointer)
             
-            if CMSampleBufferGetSampleSizeArray(result!, 0, nil, nil) == kCMSampleBufferError_BufferHasNoSampleSizes {
+            if CMSampleBufferGetSampleSizeArray(result!, entryCount: 0, arrayToFill: nil, entriesNeededOut: nil) == kCMSampleBufferError_BufferHasNoSampleSizes {
                 print("[AudioEncoder] sampleBuffer from audiobuffer has no sample size")
-                if CMSampleBufferGetSampleSizeArray(sampleBuffer, 0, nil, nil) == kCMSampleBufferError_BufferHasNoSampleSizes {
+                if CMSampleBufferGetSampleSizeArray(sampleBuffer, entryCount: 0, arrayToFill: nil, entriesNeededOut: nil) == kCMSampleBufferError_BufferHasNoSampleSizes {
                     print("[AudioEncoder] original sampleBuffer also has no sample size")
                 }
             }

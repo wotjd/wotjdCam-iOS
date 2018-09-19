@@ -66,18 +66,18 @@ class CameraButton: UIButton {
                                               constant:66.0))
         
         //clear the title
-        self.setTitle("", for:UIControlState.normal)
+        self.setTitle("", for:UIControl.State.normal)
         
         //add out target for event handling
-        self.addTarget(self, action: #selector(touchUpInside), for: UIControlEvents.touchUpInside)
-        self.addTarget(self, action: #selector(touchDown), for: UIControlEvents.touchDown)
+        self.addTarget(self, action: #selector(touchUpInside), for: UIControl.Event.touchUpInside)
+        self.addTarget(self, action: #selector(touchDown), for: UIControl.Event.touchDown)
     }
     
     
     override func prepareForInterfaceBuilder()
     {
         //clear the title
-        self.setTitle("", for:UIControlState.normal)
+        self.setTitle("", for:UIControl.State.normal)
     }
     
     override var isSelected:Bool{
@@ -85,13 +85,13 @@ class CameraButton: UIButton {
             //change the inner shape to match the state
             let morph = CABasicAnimation(keyPath: "path")
             morph.duration = animationDuration;
-            morph.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
+            morph.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
             
             //change the shape according to the current state of the control
             morph.toValue = self.currentInnerPath().cgPath
             
             //ensure the animation is not reverted once completed
-            morph.fillMode = kCAFillModeForwards
+            morph.fillMode = CAMediaTimingFillMode.forwards
             morph.isRemovedOnCompletion = false
             
             //add the animation
@@ -107,11 +107,11 @@ class CameraButton: UIButton {
         colorChange.toValue = UIColor.red.cgColor
         
         //make sure that the color animation is not reverted once the animation is completed
-        colorChange.fillMode = kCAFillModeForwards
+        colorChange.fillMode = CAMediaTimingFillMode.forwards
         colorChange.isRemovedOnCompletion = false
         
         //indicate which animation timing function to use, in this case ease in and ease out
-        colorChange.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
+        colorChange.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
         
         //add the animation
         self.pathLayer.add(colorChange, forKey:"darkColor")
@@ -131,10 +131,10 @@ class CameraButton: UIButton {
         morph.toValue = UIColor(red: 1, green: 0, blue: 0, alpha: 0.5).cgColor
         
         //ensure the animation does not get reverted once completed
-        morph.fillMode = kCAFillModeForwards
+        morph.fillMode = CAMediaTimingFillMode.forwards
         morph.isRemovedOnCompletion = false
         
-        morph.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
+        morph.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
         self.pathLayer.add(morph, forKey:"")
     }
     

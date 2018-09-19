@@ -42,7 +42,7 @@ class VideoEncoder: NSObject {
             return _formatDescription
         }
         set {
-            if !CMFormatDescriptionEqual(newValue, _formatDescription) {
+            if !CMFormatDescriptionEqual(newValue, otherFormatDescription: _formatDescription) {
                 _formatDescription = newValue
                 self.delegate?.didGetVideoFormatDescription(desc: _formatDescription)
             }
@@ -81,13 +81,13 @@ class VideoEncoder: NSObject {
                 }
                 
                 guard VTCompressionSessionCreate(
-                    kCFAllocatorDefault,
-                    width, height, kCMVideoCodecType_H264,
-                    nil, attributes as CFDictionary, nil, callback,
-                    Unmanaged.passUnretained(self).toOpaque(), &_session) == noErr else {
+                    allocator: kCFAllocatorDefault,
+                    width: width, height: height, codecType: kCMVideoCodecType_H264,
+                    encoderSpecification: nil, imageBufferAttributes: attributes as CFDictionary, compressedDataAllocator: nil, outputCallback: callback,
+                    refcon: Unmanaged.passUnretained(self).toOpaque(), compressionSessionOut: &_session) == noErr else {
                         return nil
                 }
-                VTSessionSetProperties(_session!, properties as CFDictionary)
+                VTSessionSetProperties(_session!, propertyDictionary: properties as CFDictionary)
             }
             return _session
         }
@@ -121,7 +121,7 @@ class VideoEncoder: NSObject {
         
 //        print("[VideoEncoder] encode frame")
         var flags: VTEncodeInfoFlags = []
-        let status : OSStatus = VTCompressionSessionEncodeFrame(session, imageBuffer, presentationTimeStamp, duration, nil, nil, &flags)
+        let status : OSStatus = VTCompressionSessionEncodeFrame(session, imageBuffer: imageBuffer, presentationTimeStamp: presentationTimeStamp, duration: duration, frameProperties: nil, sourceFrameRefcon: nil, infoFlagsOut: &flags)
         if status != noErr {
             print(status.description)
         }

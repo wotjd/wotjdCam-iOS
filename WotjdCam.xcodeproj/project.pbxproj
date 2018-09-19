@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		2F49FAE9212BFB3700556F99 /* LiveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F49FAE8212BFB3700556F99 /* LiveViewController.swift */; };
+		2F54C38F21521EF60029788A /* ByteBackpacker in Resources */ = {isa = PBXBuildFile; fileRef = 2F54C38E21521EF60029788A /* ByteBackpacker */; };
+		2F75FAC521521178009C0AB4 /* StreamUploader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F75FAC421521178009C0AB4 /* StreamUploader.swift */; };
+		2F75FAC721521611009C0AB4 /* StreamPacketizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F75FAC621521611009C0AB4 /* StreamPacketizer.swift */; };
 		2FA8E10C2133C7AC00BF624A /* AudioEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FA8E10B2133C7AC00BF624A /* AudioEncoder.swift */; };
 		2FC42654211BD917007B3099 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FC42653211BD917007B3099 /* AppDelegate.swift */; };
 		2FC42656211BD917007B3099 /* AuthorizationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FC42655211BD917007B3099 /* AuthorizationViewController.swift */; };
@@ -20,7 +23,6 @@
 		2FC426A9211D974B007B3099 /* FrameExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FC426A8211D974B007B3099 /* FrameExtractor.swift */; };
 		2FC426AB21215009007B3099 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FC426AA21215009007B3099 /* CameraViewController.swift */; };
 		2FC4CADE2138E162000B548E /* AVFileMuxer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FC4CADD2138E162000B548E /* AVFileMuxer.swift */; };
-		2FC4CAE0213909C5000B548E /* CameraButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FC4CADF213909C5000B548E /* CameraButton.swift */; };
 		2FC4CAE121391F6B000B548E /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F2FC35E212EADD4009C2AF3 /* Alamofire.framework */; };
 		2FC4CAE221391F72000B548E /* Logboard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F49FAE5212BFAA400556F99 /* Logboard.framework */; };
 		2FC4CB0221391FEE000B548E /* HaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FC4CAF021391FB7000B548E /* HaishinKit.framework */; };
@@ -92,13 +94,6 @@
 			remoteGlobalIDString = 29798E591CE60E5300F5CBD0;
 			remoteInfo = Tests;
 		};
-		2FC4CB0421391FEE000B548E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 2FC4CAE321391FB6000B548E /* HaishinKit.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 2945CBBC1B4BE66000104112;
-			remoteInfo = "HaishinKit iOS";
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -120,6 +115,9 @@
 		2F49FAE3212BFAA000556F99 /* HaishinKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HaishinKit.framework; path = WotjdCam/Carthage/Build/iOS/HaishinKit.framework; sourceTree = "<group>"; };
 		2F49FAE5212BFAA400556F99 /* Logboard.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Logboard.framework; path = WotjdCam/Carthage/Build/iOS/Logboard.framework; sourceTree = "<group>"; };
 		2F49FAE8212BFB3700556F99 /* LiveViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveViewController.swift; sourceTree = "<group>"; };
+		2F54C38E21521EF60029788A /* ByteBackpacker */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ByteBackpacker; sourceTree = "<group>"; };
+		2F75FAC421521178009C0AB4 /* StreamUploader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamUploader.swift; sourceTree = "<group>"; };
+		2F75FAC621521611009C0AB4 /* StreamPacketizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamPacketizer.swift; sourceTree = "<group>"; };
 		2FA8E10B2133C7AC00BF624A /* AudioEncoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEncoder.swift; sourceTree = "<group>"; };
 		2FC42650211BD917007B3099 /* WotjdCam.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WotjdCam.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2FC42653211BD917007B3099 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -135,7 +133,6 @@
 		2FC426A8211D974B007B3099 /* FrameExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameExtractor.swift; sourceTree = "<group>"; };
 		2FC426AA21215009007B3099 /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
 		2FC4CADD2138E162000B548E /* AVFileMuxer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVFileMuxer.swift; sourceTree = "<group>"; };
-		2FC4CADF213909C5000B548E /* CameraButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraButton.swift; sourceTree = "<group>"; };
 		2FC4CAE321391FB6000B548E /* HaishinKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = HaishinKit.xcodeproj; path = WotjdCam/Carthage/Checkouts/HaishinKit.swift/HaishinKit.xcodeproj; sourceTree = "<group>"; };
 		2FCC7C48212D32DB00BBDF92 /* VideoEncoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoEncoder.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -171,6 +168,60 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2F54C38A215216B60029788A /* LiveRecorder */ = {
+			isa = PBXGroup;
+			children = (
+				2F54C38C2152171E0029788A /* Capturer */,
+				2F75FAC82152161E009C0AB4 /* Encoder */,
+				2F54C38D215217340029788A /* Muxer */,
+			);
+			name = LiveRecorder;
+			sourceTree = "<group>";
+		};
+		2F54C38B215216C60029788A /* StreamUploader */ = {
+			isa = PBXGroup;
+			children = (
+				2F54C38E21521EF60029788A /* ByteBackpacker */,
+				2F75FAC421521178009C0AB4 /* StreamUploader.swift */,
+				2F75FAC621521611009C0AB4 /* StreamPacketizer.swift */,
+			);
+			name = StreamUploader;
+			sourceTree = "<group>";
+		};
+		2F54C38C2152171E0029788A /* Capturer */ = {
+			isa = PBXGroup;
+			children = (
+				2FC426A8211D974B007B3099 /* FrameExtractor.swift */,
+			);
+			name = Capturer;
+			sourceTree = "<group>";
+		};
+		2F54C38D215217340029788A /* Muxer */ = {
+			isa = PBXGroup;
+			children = (
+				2FC4CADD2138E162000B548E /* AVFileMuxer.swift */,
+			);
+			name = Muxer;
+			sourceTree = "<group>";
+		};
+		2F54C39021521F9D0029788A /* Outdated */ = {
+			isa = PBXGroup;
+			children = (
+				2FC42655211BD917007B3099 /* AuthorizationViewController.swift */,
+				2F49FAE8212BFB3700556F99 /* LiveViewController.swift */,
+			);
+			name = Outdated;
+			sourceTree = "<group>";
+		};
+		2F75FAC82152161E009C0AB4 /* Encoder */ = {
+			isa = PBXGroup;
+			children = (
+				2FA8E10B2133C7AC00BF624A /* AudioEncoder.swift */,
+				2FCC7C48212D32DB00BBDF92 /* VideoEncoder.swift */,
+			);
+			name = Encoder;
+			sourceTree = "<group>";
+		};
 		2FC42647211BD917007B3099 = {
 			isa = PBXGroup;
 			children = (
@@ -194,19 +245,15 @@
 		2FC42652211BD917007B3099 /* WotjdCam */ = {
 			isa = PBXGroup;
 			children = (
+				2F54C38B215216C60029788A /* StreamUploader */,
+				2F54C38A215216B60029788A /* LiveRecorder */,
 				2FC42653211BD917007B3099 /* AppDelegate.swift */,
-				2FC42655211BD917007B3099 /* AuthorizationViewController.swift */,
-				2FC4CADF213909C5000B548E /* CameraButton.swift */,
 				2FC426AA21215009007B3099 /* CameraViewController.swift */,
-				2FC426A8211D974B007B3099 /* FrameExtractor.swift */,
-				2FA8E10B2133C7AC00BF624A /* AudioEncoder.swift */,
-				2FCC7C48212D32DB00BBDF92 /* VideoEncoder.swift */,
-				2FC4CADD2138E162000B548E /* AVFileMuxer.swift */,
-				2F49FAE8212BFB3700556F99 /* LiveViewController.swift */,
-				2FC42657211BD917007B3099 /* Main.storyboard */,
 				2FC4265A211BD918007B3099 /* Assets.xcassets */,
 				2FC4265C211BD918007B3099 /* LaunchScreen.storyboard */,
+				2FC42657211BD917007B3099 /* Main.storyboard */,
 				2FC4265F211BD918007B3099 /* Info.plist */,
+				2F54C39021521F9D0029788A /* Outdated */,
 			);
 			path = WotjdCam;
 			sourceTree = "<group>";
@@ -255,7 +302,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				2FC4CB0521391FEE000B548E /* PBXTargetDependency */,
 			);
 			name = WotjdCam;
 			productName = WotjdCam;
@@ -308,6 +354,7 @@
 				TargetAttributes = {
 					2FC4264F211BD917007B3099 = {
 						CreatedOnToolsVersion = 9.4.1;
+						LastSwiftMigration = 1000;
 					};
 					2FC42686211BF84F007B3099 = {
 						CreatedOnToolsVersion = 9.4.1;
@@ -415,6 +462,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2FC4265E211BD918007B3099 /* LaunchScreen.storyboard in Resources */,
+				2F54C38F21521EF60029788A /* ByteBackpacker in Resources */,
 				2FC4265B211BD918007B3099 /* Assets.xcassets in Resources */,
 				2FC42659211BD917007B3099 /* Main.storyboard in Resources */,
 			);
@@ -450,7 +498,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/usr/local/bin/carthage copy-frameworks";
+			shellScript = "/usr/local/bin/carthage copy-frameworks\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -460,14 +508,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				2FC4CADE2138E162000B548E /* AVFileMuxer.swift in Sources */,
-				2FC4CAE0213909C5000B548E /* CameraButton.swift in Sources */,
 				2FC42656211BD917007B3099 /* AuthorizationViewController.swift in Sources */,
 				2FC426AB21215009007B3099 /* CameraViewController.swift in Sources */,
 				2FC426A9211D974B007B3099 /* FrameExtractor.swift in Sources */,
 				2FA8E10C2133C7AC00BF624A /* AudioEncoder.swift in Sources */,
 				2FC42654211BD917007B3099 /* AppDelegate.swift in Sources */,
 				2FCC7C49212D32DB00BBDF92 /* VideoEncoder.swift in Sources */,
+				2F75FAC721521611009C0AB4 /* StreamPacketizer.swift in Sources */,
 				2F49FAE9212BFB3700556F99 /* LiveViewController.swift in Sources */,
+				2F75FAC521521178009C0AB4 /* StreamUploader.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -486,14 +535,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		2FC4CB0521391FEE000B548E /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = "HaishinKit iOS";
-			targetProxy = 2FC4CB0421391FEE000B548E /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		2FC42657211BD917007B3099 /* Main.storyboard */ = {
@@ -648,7 +689,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = wotjd.WotjdCam;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
@@ -672,7 +713,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = wotjd.WotjdCam;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;

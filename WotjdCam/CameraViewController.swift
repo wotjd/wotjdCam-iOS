@@ -16,7 +16,7 @@ extension CMBlockBuffer {
     var data: Data? {
         var length: Int = 0
         var buffer: UnsafeMutablePointer<Int8>? = nil
-        guard CMBlockBufferGetDataPointer(self, 0, nil, &length, &buffer) == noErr else {
+        guard CMBlockBufferGetDataPointer(self, atOffset: 0, lengthAtOffsetOut: nil, totalLengthOut: &length, dataPointerOut: &buffer) == noErr else {
             return nil
         }
         return Data(bytes: buffer!, count: length)
@@ -163,7 +163,7 @@ extension CameraViewController : VideoEncoderDelegate {
         
         // 1. check if CMBuffer had I-frame
         var isIFrame:Bool = false
-        let attachmentsArray:CFArray = CMSampleBufferGetSampleAttachmentsArray(sampleBuffer, false)!
+        let attachmentsArray:CFArray = CMSampleBufferGetSampleAttachmentsArray(sampleBuffer, createIfNecessary: false)!
         
         // check how many attachments
         if CFArrayGetCount(attachmentsArray) > 0 {
@@ -187,14 +187,14 @@ extension CameraViewController : VideoEncoderDelegate {
             
             // how many params
             var numParams:size_t = 0
-            CMVideoFormatDescriptionGetH264ParameterSetAtIndex(description, 0, nil, nil, &numParams, nil)
+            CMVideoFormatDescriptionGetH264ParameterSetAtIndex(description, parameterSetIndex: 0, parameterSetPointerOut: nil, parameterSetSizeOut: nil, parameterSetCountOut: &numParams, nalUnitHeaderLengthOut: nil)
             
             // write each param-set to elementary stream
             //            print("Write param to elementaryStream ", numParams)
             for i in 0 ..< numParams {
                 var parameterSetPointer:UnsafePointer<UInt8>? = nil
                 var parameterSetLength:size_t = 0
-                CMVideoFormatDescriptionGetH264ParameterSetAtIndex(description, i, &parameterSetPointer, &parameterSetLength, nil, nil)
+                CMVideoFormatDescriptionGetH264ParameterSetAtIndex(description, parameterSetIndex: i, parameterSetPointerOut: &parameterSetPointer, parameterSetSizeOut: &parameterSetLength, parameterSetCountOut: nil, nalUnitHeaderLengthOut: nil)
                 elementaryStream.append(nStartCode, length: nStartCodeLength)
                 elementaryStream.append(parameterSetPointer!, length: parameterSetLength)
             }
@@ -203,7 +203,7 @@ extension CameraViewController : VideoEncoderDelegate {
         // 4. Get a pointer to the raw AVCC NAL unit data in the sample buffer
         var blockBufferLength:size_t = 0
         var bufferDataPointer: UnsafeMutablePointer<Int8>? = nil
-        CMBlockBufferGetDataPointer(CMSampleBufferGetDataBuffer(sampleBuffer)!, 0, nil, &blockBufferLength, &bufferDataPointer)
+        CMBlockBufferGetDataPointer(CMSampleBufferGetDataBuffer(sampleBuffer)!, atOffset: 0, lengthAtOffsetOut: nil, totalLengthOut: &blockBufferLength, dataPointerOut: &bufferDataPointer)
         //        print ("Block length = ", blockBufferLength)
         
         // 5. Loop through all the NAL units in the block buffer

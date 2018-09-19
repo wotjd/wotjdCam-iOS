@@ -136,7 +136,7 @@ class AVFileWriter : NSObject {
         if !isVideo && self.isFirstFrame {
             print("ignoring audio frame before first video frame..")
         } else if CMSampleBufferDataIsReady(sampleBuffer) {
-            if self.assetWriter.status == AVAssetWriterStatus.unknown {
+            if self.assetWriter.status == AVAssetWriter.Status.unknown {
                 addVideoInput(CMSampleBufferGetFormatDescription(sampleBuffer))
                 print("Start writing, isVideo = \(isVideo), status = \(self.assetWriter.status.rawValue)")
                 let startTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
@@ -145,7 +145,7 @@ class AVFileWriter : NSObject {
                 self.isFirstFrame = false
             }
             
-            if self.assetWriter.status == AVAssetWriterStatus.failed {
+            if self.assetWriter.status == AVAssetWriter.Status.failed {
                 print("Error occured, isVideo = \(isVideo), status = \(self.assetWriter.status.rawValue), \(self.assetWriter.error!.localizedDescription)")
 //                return
             }
@@ -157,8 +157,8 @@ class AVFileWriter : NSObject {
             } else if !self.isAudioMuted {
                 if self.audioInputWriter.isReadyForMoreMediaData {
                     if self.isFirstAudio {
-                        let dict = CMTimeCopyAsDictionary(CMTimeMake(1024, 44100), kCFAllocatorDefault)
-                        CMSetAttachment(sampleBuffer, kCMSampleBufferAttachmentKey_TrimDurationAtStart, dict, kCMAttachmentMode_ShouldNotPropagate)
+                        let dict = CMTimeCopyAsDictionary(CMTimeMake(value: 1024, timescale: 44100), allocator: kCFAllocatorDefault)
+                        CMSetAttachment(sampleBuffer, key: kCMSampleBufferAttachmentKey_TrimDurationAtStart, value: dict, attachmentMode: kCMAttachmentMode_ShouldNotPropagate)
                         print("setting attachment.")
                         self.isFirstAudio = false
                     }

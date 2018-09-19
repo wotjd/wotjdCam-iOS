@@ -20,8 +20,8 @@ class LiveViewController: UIViewController {
         let session: AVAudioSession = AVAudioSession.sharedInstance()
         do {
             try session.setPreferredSampleRate(44_100)
-            try session.setCategory(AVAudioSessionCategoryPlayAndRecord, with: .allowBluetooth)
-            try session.setMode(AVAudioSessionModeDefault)
+            try session.setCategory(AVAudioSession.Category(rawValue: convertFromAVAudioSessionCategory(AVAudioSession.Category.playAndRecord)), mode: .videoRecording)
+            try session.setMode(AVAudioSession.Mode.default)
             try session.setActive(true)
         } catch {
         }
@@ -57,4 +57,9 @@ class LiveViewController: UIViewController {
     }
     */
 
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromAVAudioSessionCategory(_ input: AVAudioSession.Category) -> String {
+	return input.rawValue
 }
